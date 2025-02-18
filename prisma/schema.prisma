@@ -79,6 +79,10 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   roleId        String?
+  
+  // Email relations
+  sentEmails     Email[]  @relation("SentEmails")
+  receivedEmails Email[]  @relation("ReceivedEmails")
 }
 
 model Category {
@@ -132,4 +136,30 @@ model BlogCategory {
   blogs     Blog[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Email {
+  id        String   @id @default(cuid())
+  from      String
+  to        String[]
+  subject   String
+  content   String   @db.Text
+  preview   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isRead    Boolean  @default(false)
+  isPinned  Boolean  @default(false)
+  labels    String[]
+  section   String?  // 'Today', 'Yesterday', etc.
+  
+  // Calendar event related fields
+  hasCalendar     Boolean  @default(false)
+  calendarDate    DateTime?
+  calendarAction  String?
+
+  // Relations
+  sender    User     @relation("SentEmails", fields: [from], references: [email])
+  receivers User[]   @relation("ReceivedEmails")
+
+  @@index([from])
 }

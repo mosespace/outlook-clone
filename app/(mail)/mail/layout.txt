@@ -1,0 +1,52 @@
+import { authOptions } from '@/config/auth';
+import { getServerSession } from 'next-auth';
+import { ReactNode } from 'react';
+
+interface LayoutProps {
+  children: ReactNode;
+}
+
+export default async function MailLayout({ children }: LayoutProps) {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    return null; // Or redirect to login
+  }
+
+  return (
+    <div className="min-h-screen w-full">
+      <div className="flex min-h-screen w-full">
+        {/* Left Sidebar */}
+        <aside className="w-10 bg-slate-100 p-4 text-black">
+          <nav className="space-y-2" aria-label="Left navigation">
+            {/* Navigation items */}
+          </nav>
+        </aside>
+
+        {/* Main Content */}
+        <main className="mx-auto flex-1 items-center">
+          <header className="flex h-12 items-center justify-between bg-slate-100 px-6 text-black">
+            <div className="flex items-center space-x-4">
+              <h1 className="text-xl font-semibold">Mail</h1>
+            </div>
+          </header>
+
+          <section className="rounded-lg bg-red-600s p-6">{children}</section>
+
+          <footer className="flex h-12 items-center justify-between border-b bg-slate-100 px-6 text-black">
+            <div className="flex items-center space-x-4">
+              {/* Footer content */}
+            </div>
+          </footer>
+        </main>
+
+        {/* Right Sidebar */}
+        <aside className="w-10 bg-slate-100 p-4 text-black">
+          <nav className="space-y-2" aria-label="Right navigation">
+            {/* Navigation items */}
+          </nav>
+        </aside>
+      </div>
+    </div>
+  );
+}
