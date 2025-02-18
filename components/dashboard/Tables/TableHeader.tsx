@@ -1,16 +1,16 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import * as XLSX from "xlsx";
-import { ScrollArea } from "@/components/ui/scroll-area";
+'use client';
+import { Button } from '@/components/ui/button';
+import * as XLSX from 'xlsx';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
-import { Check, CloudUpload, Loader2, PlusCircle, X } from "lucide-react";
-import Link from "next/link";
-import React, { useState } from "react";
-import { RiFileExcel2Line } from "react-icons/ri";
+import { Check, CloudUpload, Loader2, PlusCircle, X } from 'lucide-react';
+import Link from 'next/link';
+import React, { useState } from 'react';
+import { RiFileExcel2Line } from 'react-icons/ri';
 import {
   Options,
   SelectValue,
-} from "react-tailwindcss-select/dist/components/type";
+} from 'react-tailwindcss-select/dist/components/type';
 import {
   Dialog,
   DialogClose,
@@ -20,13 +20,13 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { formatBytes } from "@/lib/formatBytes";
-import { generateSlug } from "@/lib/generateSlug";
-import { createBulkCategories } from "@/actions/categories";
-import toast from "react-hot-toast";
-import exportDataToExcel from "@/lib/exportDataToExcel";
-import { FaFileExcel } from "react-icons/fa";
+} from '@/components/ui/dialog';
+import { formatBytes } from '@/lib/formatBytes';
+import { generateSlug } from '@/lib/generateSlug';
+import { createBulkCategories } from '@/actions/categories';
+import { toast } from 'sonner';
+import exportDataToExcel from '@/lib/exportDataToExcel';
+import { FaFileExcel } from 'react-icons/fa';
 
 type TableHeaderProps = {
   title: string;
@@ -47,39 +47,39 @@ export default function TableHeader({
   const [status, setStatus] = useState<SelectValue>(null);
   const [date, setDate] = useState<SelectValue>(null);
   const [excelFile, setExcelFile] = useState<File | null>(null);
-  const [jsonData, setJsonData] = useState("");
+  const [jsonData, setJsonData] = useState('');
   const [preview, setPreview] = useState(false);
   const [loading, setLoading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
-  let excelDownload = "#";
-  if (model === "category") {
-    excelDownload = "/Categories.xlsx";
-  } else if (model === "brand") {
-    excelDownload = "/Brands.xlsx";
-  } else if (model === "warehouse") {
-    excelDownload = "/Warehouses.xlsx";
-  } else if (model === "supplier") {
-    excelDownload = "/Suppliers.xlsx";
-  } else if (model === "unit") {
-    excelDownload = "/Units.xlsx";
-  } else if (model === "product") {
-    excelDownload = "/Products.xlsx";
+  let excelDownload = '#';
+  if (model === 'category') {
+    excelDownload = '/Categories.xlsx';
+  } else if (model === 'brand') {
+    excelDownload = '/Brands.xlsx';
+  } else if (model === 'warehouse') {
+    excelDownload = '/Warehouses.xlsx';
+  } else if (model === 'supplier') {
+    excelDownload = '/Suppliers.xlsx';
+  } else if (model === 'unit') {
+    excelDownload = '/Units.xlsx';
+  } else if (model === 'product') {
+    excelDownload = '/Products.xlsx';
   }
   console.log(excelFile);
   const options: Options = [
-    { value: "true", label: "Active" },
-    { value: "false", label: "Disabled" },
+    { value: 'true', label: 'Active' },
+    { value: 'false', label: 'Disabled' },
   ];
   const dateOptions: Options = [
-    { value: "lastMonth", label: "Last Month" },
-    { value: "thisMonth", label: "This Month" },
+    { value: 'lastMonth', label: 'Last Month' },
+    { value: 'thisMonth', label: 'This Month' },
   ];
   const handleStatusChange = (item: SelectValue) => {
-    console.log("value:", item);
+    console.log('value:', item);
     setStatus(item);
   };
   const handleDateChange = (item: SelectValue) => {
-    console.log("value:", item);
+    console.log('value:', item);
     setDate(item);
   };
 
@@ -90,7 +90,7 @@ export default function TableHeader({
       reader.onload = (e) => {
         const data = e.target?.result;
         if (data) {
-          const workbook = XLSX.read(data, { type: "binary" });
+          const workbook = XLSX.read(data, { type: 'binary' });
           // SheetName
           const sheetName = workbook.SheetNames[0];
           // Worksheet
@@ -110,7 +110,7 @@ export default function TableHeader({
       reader.onload = async (e) => {
         const data = e.target?.result;
         if (data) {
-          const workbook = XLSX.read(data, { type: "binary" });
+          const workbook = XLSX.read(data, { type: 'binary' });
           // SheetName
           const sheetName = workbook.SheetNames[0];
           // Worksheet
@@ -121,7 +121,7 @@ export default function TableHeader({
 
           try {
             setLoading(true);
-            if (model === "category") {
+            if (model === 'category') {
               const categories = json.map((item: any) => {
                 return {
                   title: item.Title,
@@ -141,7 +141,7 @@ export default function TableHeader({
           } catch (error) {
             setUploadSuccess(false);
             setLoading(false);
-            toast.error("Something went wrong, Please Try again 😢");
+            toast.error('Something went wrong, Please Try again 😢');
             console.log(error);
           }
         }
@@ -150,7 +150,7 @@ export default function TableHeader({
     }
   }
   function handleExportData() {
-    console.log("data exported");
+    console.log('data exported');
     const today = new Date();
     const filename = `Exported ${title} ${today.toDateString()}`;
     // console.log(filename);
@@ -211,7 +211,7 @@ export default function TableHeader({
                       {preview ? (
                         <Button
                           onClick={() => setPreview(false)}
-                          variant={"outline"}
+                          variant={'outline'}
                           type="button"
                         >
                           Stop Preview
@@ -219,7 +219,7 @@ export default function TableHeader({
                       ) : (
                         <Button
                           onClick={previewData}
-                          variant={"outline"}
+                          variant={'outline'}
                           type="button"
                         >
                           Preview
@@ -299,9 +299,9 @@ export default function TableHeader({
                                 <p className="lg:mb-2 text-sm text-gray-500 dark:text-gray-400">
                                   <span className="font-semibold">
                                     Click to upload
-                                  </span>{" "}
+                                  </span>{' '}
                                   <span className="hidden lg:inline">
-                                    {" "}
+                                    {' '}
                                     or drag and drop
                                   </span>
                                 </p>
@@ -316,7 +316,7 @@ export default function TableHeader({
                                 className="hidden"
                                 onChange={(e) =>
                                   setExcelFile(
-                                    e.target.files ? e.target.files[0] : null
+                                    e.target.files ? e.target.files[0] : null,
                                   )
                                 }
                               />
@@ -349,7 +349,7 @@ export default function TableHeader({
                         {preview ? (
                           <Button
                             onClick={() => setPreview(false)}
-                            variant={"outline"}
+                            variant={'outline'}
                             type="button"
                           >
                             Stop Preview
@@ -357,7 +357,7 @@ export default function TableHeader({
                         ) : (
                           <Button
                             onClick={previewData}
-                            variant={"outline"}
+                            variant={'outline'}
                             type="button"
                           >
                             Preview

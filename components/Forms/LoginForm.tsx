@@ -1,20 +1,19 @@
-"use client";
-import { Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
-import React, { useState } from "react";
-import Link from "next/link";
-import { useForm } from "react-hook-form";
+'use client';
+import { Loader2, Lock, Mail } from 'lucide-react';
+import Link from 'next/link';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
-import { LoginProps } from "@/types/types";
-import toast from "react-hot-toast";
-import { useRouter, useSearchParams } from "next/navigation";
-import { signIn } from "next-auth/react";
-import { Button } from "../ui/button";
-import { FaGithub, FaGoogle } from "react-icons/fa";
-import TextInput from "../FormInputs/TextInput";
-import PasswordInput from "../FormInputs/PasswordInput";
-import SubmitButton from "../FormInputs/SubmitButton";
-import Logo from "../global/Logo";
-import CustomCarousel from "../frontend/custom-carousel";
+import { LoginProps } from '@/types/types';
+import { signIn } from 'next-auth/react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { FaGithub, FaGoogle } from 'react-icons/fa';
+import { toast } from 'sonner';
+import PasswordInput from '../FormInputs/PasswordInput';
+import SubmitButton from '../FormInputs/SubmitButton';
+import TextInput from '../FormInputs/TextInput';
+import Logo from '../global/Logo';
+import { Button } from '../ui/button';
 export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const {
@@ -24,43 +23,43 @@ export default function LoginForm() {
     reset,
   } = useForm<LoginProps>();
   const params = useSearchParams();
-  const returnUrl = params.get("returnUrl") || "/dashboard";
-  const [passErr, setPassErr] = useState("");
+  const returnUrl = params.get('returnUrl') || '/dashboard';
+  const [passErr, setPassErr] = useState('');
   const router = useRouter();
   async function onSubmit(data: LoginProps) {
     try {
       setLoading(true);
-      setPassErr("");
-      console.log("Attempting to sign in with credentials:", data);
-      const loginData = await signIn("credentials", {
+      setPassErr('');
+      console.log('Attempting to sign in with credentials:', data);
+      const loginData = await signIn('credentials', {
         ...data,
         redirect: false,
       });
-      console.log("SignIn response:", loginData);
+      console.log('SignIn response:', loginData);
       if (loginData?.error) {
         setLoading(false);
-        toast.error("Sign-in error: Check your credentials");
-        setPassErr("Wrong Credentials, Check again");
+        toast.error('Sign-in error: Check your credentials');
+        setPassErr('Wrong Credentials, Check again');
         // setShowNotification(true);
       } else {
         // Sign-in was successful
         // setShowNotification(false);
         reset();
         setLoading(false);
-        toast.success("Login Successful");
-        setPassErr("");
+        toast.success('Login Successful');
+        setPassErr('');
         router.push(returnUrl);
       }
     } catch (error) {
       setLoading(false);
-      console.error("Network Error:", error);
+      console.error('Network Error:', error);
       // toast.error("Its seems something is wrong with your Network");
     }
   }
   return (
-    <div className="w-full lg:grid h-screen lg:min-h-[600px] lg:grid-cols-2 relative ">
-      <div className="flex items-center justify-center py-12">
-        <div className="mx-auto grid w-[400px] gap-6 mt-10 md:mt-0">
+    <div className="w-full items-center justify-center lg:grid h-screen lg:min-h-[600px] relative">
+      <div className="py-12 w-full mx-auto">
+        <div className="mx-auto w-full grid max-w-[400px] gap-6 mt-10 md:mt-0">
           <div className="absolute left-1/3 top-14 md:top-5 md:left-5">
             <Logo />
           </div>
@@ -109,16 +108,16 @@ export default function LoginForm() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <Button
-                onClick={() => signIn("google")}
-                variant={"outline"}
+                onClick={() => signIn('google')}
+                variant={'outline'}
                 className="w-full"
               >
                 <FaGoogle className="mr-2 w-6 h-6 text-red-500" />
                 Login with Google
               </Button>
               <Button
-                onClick={() => signIn("github")}
-                variant={"outline"}
+                onClick={() => signIn('github')}
+                variant={'outline'}
                 className="w-full"
               >
                 <FaGithub className="mr-2 w-6 h-6 text-slate-900 dark:text-white" />
@@ -126,7 +125,7 @@ export default function LoginForm() {
               </Button>
             </div>
             <p className="mt-6  text-sm text-gray-500">
-              Not a Registered ?{" "}
+              Not a Registered ?{' '}
               <Link
                 href="/register"
                 className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
@@ -136,9 +135,6 @@ export default function LoginForm() {
             </p>
           </div>
         </div>
-      </div>
-      <div className="hidden bg-muted lg:block relative">
-        <CustomCarousel />
       </div>
     </div>
   );

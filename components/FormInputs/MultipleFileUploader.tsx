@@ -1,7 +1,7 @@
-import { UploadDropzone } from "@/lib/uploadthing";
-import { Pencil, XCircle } from "lucide-react";
-import React from "react";
-import toast from "react-hot-toast";
+import { UploadDropzone } from '@/lib/uploadthing';
+import { Pencil, XCircle } from 'lucide-react';
+import React from 'react';
+import { toast } from 'sonner';
 import {
   FaFilePdf,
   FaImage,
@@ -10,8 +10,8 @@ import {
   FaFileArchive,
   FaFilePowerpoint,
   FaFileAlt,
-} from "react-icons/fa";
-import { MdTextSnippet } from "react-icons/md"; // For .txt files
+} from 'react-icons/fa';
+import { MdTextSnippet } from 'react-icons/md'; // For .txt files
 
 type MultipleImageInputProps = {
   label: string;
@@ -28,35 +28,35 @@ export type FileProps = {
 };
 export function getFileIcon(extension: string | undefined) {
   switch (extension) {
-    case "pdf":
+    case 'pdf':
       return <FaFilePdf className="w-6 h-6 flex-shrink-0 mr-2 text-red-500" />;
-    case "jpg":
-    case "jpeg":
-    case "png":
-    case "gif":
+    case 'jpg':
+    case 'jpeg':
+    case 'png':
+    case 'gif':
       return <FaImage className="w-6 h-6 flex-shrink-0 mr-2 text-gray-600" />;
-    case "doc":
-    case "docx":
+    case 'doc':
+    case 'docx':
       return (
         <FaFileWord className="w-6 h-6 flex-shrink-0 mr-2 text-blue-500" />
       );
-    case "xls":
-    case "xlsx":
+    case 'xls':
+    case 'xlsx':
       return (
         <FaFileExcel className="w-6 h-6 flex-shrink-0 mr-2 text-green-500" />
       );
-    case "ppt":
-    case "pptx":
+    case 'ppt':
+    case 'pptx':
       return (
         <FaFilePowerpoint className="w-6 h-6 flex-shrink-0 mr-2 text-orange-500" />
       );
-    case "zip":
-    case "gzip":
-    case "tar":
+    case 'zip':
+    case 'gzip':
+    case 'tar':
       return (
         <FaFileArchive className="w-6 h-6 flex-shrink-0 mr-2 text-yellow-600" />
       );
-    case "txt":
+    case 'txt':
       return (
         <MdTextSnippet className="w-6 h-6 flex-shrink-0 mr-2 text-gray-500" />
       );
@@ -68,8 +68,8 @@ export default function MultipleFileUpload({
   label,
   files,
   setFiles,
-  className = "col-span-full",
-  endpoint = "",
+  className = 'col-span-full',
+  endpoint = '',
 }: MultipleImageInputProps) {
   function handleImageRemove(fileIndex: any) {
     const updatedFiles = files.filter((file, index) => index !== fileIndex);
@@ -100,7 +100,7 @@ export default function MultipleFileUpload({
       {files.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2  gap-4">
           {files.map((file, i) => {
-            const extension = file.title.split(".").pop(); // Extract file extension
+            const extension = file.title.split('.').pop(); // Extract file extension
             return (
               <div key={i} className="relative mb-6">
                 <button
@@ -142,10 +142,10 @@ export default function MultipleFileUpload({
             setFiles(urls);
             console.log(urls);
             console.log(res);
-            console.log("Upload Completed");
+            console.log('Upload Completed');
           }}
           onUploadError={(error) => {
-            toast.error("File Upload Failed, Try Again");
+            toast.error('File Upload Failed, Try Again');
             console.log(`ERROR! ${error.message}`, error);
           }}
         />

@@ -1,8 +1,8 @@
-"use client";
-import { createNewBlog } from "@/actions/blogs";
-import FormSelectInput from "@/components/FormInputs/FormSelectInput";
-import { Button } from "@/components/ui/button";
-import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+'use client';
+import { createNewBlog } from '@/actions/blogs';
+import FormSelectInput from '@/components/FormInputs/FormSelectInput';
+import { Button } from '@/components/ui/button';
+import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -11,15 +11,15 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { AuthenticatedUser } from "@/config/useAuth";
-import { generateSlug } from "@/lib/generateSlug";
-import { Loader2, Plus, PlusCircle } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import toast from "react-hot-toast";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { AuthenticatedUser } from '@/config/useAuth';
+import { generateSlug } from '@/lib/generateSlug';
+import { Loader2, Plus, PlusCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 export function BlogCreateForm({
   categories,
@@ -31,15 +31,15 @@ export function BlogCreateForm({
   }[];
   author: AuthenticatedUser | null;
 }) {
-  const [title, setTile] = useState("");
-  const [err, setErr] = useState("");
+  const [title, setTile] = useState('');
+  const [err, setErr] = useState('');
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<any>(categories[0]);
   const router = useRouter();
   const createBlog = async () => {
     setLoading(true);
     if (!title.trim()) {
-      setErr("Title is required");
+      setErr('Title is required');
       return;
     }
     const data = {
@@ -47,10 +47,10 @@ export function BlogCreateForm({
       slug: generateSlug(title),
       categoryId: selectedCategory.value,
       categoryTitle: selectedCategory.label,
-      authorId: author?.id ?? "",
-      authorName: author?.name ?? "",
-      authorImage: author?.image ?? "",
-      authorTitle: "",
+      authorId: author?.id ?? '',
+      authorName: author?.name ?? '',
+      authorImage: author?.image ?? '',
+      authorTitle: '',
     };
     console.log(data);
     try {
@@ -59,7 +59,7 @@ export function BlogCreateForm({
       if (res && res.id) {
         setLoading(false);
         router.push(`/dashboard/blogs/update/${res.id}`);
-        toast.success("Blog created successfully");
+        toast.success('Blog created successfully');
       }
     } catch (error) {
       setLoading(false);
@@ -92,7 +92,7 @@ export function BlogCreateForm({
                 placeholder="New Blog title"
                 value={title}
                 onChange={(e) => setTile(e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && createBlog()}
+                onKeyPress={(e) => e.key === 'Enter' && createBlog()}
               />
               {err && <p className="text-red-500 -mt-1">{err}</p>}
               <FormSelectInput

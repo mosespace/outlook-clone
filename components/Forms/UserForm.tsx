@@ -1,34 +1,34 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 
-import FormHeader from "./FormHeader";
-import { useRouter } from "next/navigation";
-import Select from "react-tailwindcss-select";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { UserProps } from "@/types/types";
+import FormHeader from './FormHeader';
+import { useRouter } from 'next/navigation';
+import Select from 'react-tailwindcss-select';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { UserProps } from '@/types/types';
 
-import toast from "react-hot-toast";
+import { toast } from 'sonner';
 import {
   Options,
   SelectValue,
-} from "react-tailwindcss-select/dist/components/type";
-import { Role, User } from "@prisma/client";
-import FormFooter from "./FormFooter";
-import { createUser } from "@/actions/users";
-import { Lock } from "lucide-react";
-import PasswordInput from "../FormInputs/PasswordInput";
-import TextInput from "../FormInputs/TextInput";
-import FormSelectInput from "../FormInputs/FormSelectInput";
-import ImageInput from "../FormInputs/ImageInput";
+} from 'react-tailwindcss-select/dist/components/type';
+import { Role, User } from '@prisma/client';
+import FormFooter from './FormFooter';
+import { createUser } from '@/actions/users';
+import { Lock } from 'lucide-react';
+import PasswordInput from '../FormInputs/PasswordInput';
+import TextInput from '../FormInputs/TextInput';
+import FormSelectInput from '../FormInputs/FormSelectInput';
+import ImageInput from '../FormInputs/ImageInput';
 type UserFormProps = {
   editingId?: string | undefined;
   initialData?: User | undefined | null;
@@ -55,11 +55,11 @@ export default function UserForm({
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
-  const initialImage = initialData?.image || "/placeholder.svg";
+  const initialImage = initialData?.image || '/placeholder.svg';
   const [imageUrl, setImageUrl] = useState(initialImage);
   const initialStatus = {
-    value: initialData?.status == true ? "true" : "false",
-    label: initialData?.status == true ? "Active" : "Disabled",
+    value: initialData?.status == true ? 'true' : 'false',
+    label: initialData?.status == true ? 'Active' : 'Disabled',
   };
   const initialRoleId = initialData?.roleId;
   const initialRole = roles.find((item) => item.id === initialRoleId);
@@ -75,11 +75,11 @@ export default function UserForm({
   });
   const [status, setStatus] = useState<any>(initialStatus);
   const options: Options = [
-    { value: "true", label: "Active" },
-    { value: "false", label: "Disabled" },
+    { value: 'true', label: 'Active' },
+    { value: 'false', label: 'Disabled' },
   ];
   const handleChange = (item: SelectValue) => {
-    console.log("value:", item);
+    console.log('value:', item);
     setStatus(item);
   };
   async function saveUser(data: UserProps) {
@@ -92,16 +92,16 @@ export default function UserForm({
         // await updateUserById(editingId, data);
         setLoading(false);
         // Toast
-        toast.success("Updated Successfully!");
+        toast.success('Updated Successfully!');
         //reset
         reset();
         //route
-        router.push("/dashboard/users");
+        router.push('/dashboard/users');
       } else {
         await createUser(data);
         setLoading(false);
         // Toast
-        toast.success("Successfully Created!");
+        toast.success('Successfully Created!');
         //reset
         reset();
       }

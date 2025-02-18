@@ -1,25 +1,25 @@
-"use client";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import React, { useState } from "react";
-import VEditor from "./editor";
-import { Button } from "@/components/ui/button";
-import ImageInput from "@/components/FormInputs/ImageInput";
+'use client';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import React, { useState } from 'react';
+import VEditor from './editor';
+import { Button } from '@/components/ui/button';
+import ImageInput from '@/components/FormInputs/ImageInput';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import TextInput from "@/components/FormInputs/TextInput";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { Blog } from "@prisma/client";
-import { generateSlug } from "@/lib/generateSlug";
-import toast from "react-hot-toast";
-import TextArea from "@/components/FormInputs/TextAreaInput";
-import { updateBlogContent, updateMetaData } from "@/actions/blogs";
-import { Loader2 } from "lucide-react";
+} from '@/components/ui/card';
+import TextInput from '@/components/FormInputs/TextInput';
+import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { Blog } from '@prisma/client';
+import { generateSlug } from '@/lib/generateSlug';
+import { toast } from 'sonner';
+import TextArea from '@/components/FormInputs/TextAreaInput';
+import { updateBlogContent, updateMetaData } from '@/actions/blogs';
+import { Loader2 } from 'lucide-react';
 export type MetaPros = {
   description: string;
   title: string;
@@ -33,7 +33,7 @@ export default function BlogEditForm({
   editingId: string;
 }) {
   const initialContent =
-    initialData?.content ?? "<p>Write your article here</p>";
+    initialData?.content ?? '<p>Write your article here</p>';
   const [content, setContent] = useState(initialContent);
   const {
     register,
@@ -43,10 +43,10 @@ export default function BlogEditForm({
   } = useForm<MetaPros>({
     defaultValues: {
       title: initialData?.title,
-      description: initialData?.description || "",
+      description: initialData?.description || '',
     },
   });
-  const initialImage = initialData?.thumbnail ?? "/placeholder.png";
+  const initialImage = initialData?.thumbnail ?? '/placeholder.png';
   const [imageUrl, setImageUrl] = useState(initialImage);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -56,9 +56,9 @@ export default function BlogEditForm({
       data.thumbnail = imageUrl;
       await updateMetaData(editingId, data);
       setLoading(false);
-      toast.success("Updated Successfully!");
+      toast.success('Updated Successfully!');
       reset();
-      setImageUrl("/placeholder.png");
+      setImageUrl('/placeholder.png');
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -70,7 +70,7 @@ export default function BlogEditForm({
     try {
       await updateBlogContent(editingId, content);
       setLoading(false);
-      toast.success("Updated successfully");
+      toast.success('Updated successfully');
     } catch (error) {
       console.log(error);
     }
@@ -82,14 +82,14 @@ export default function BlogEditForm({
       </h2>
       <Tabs defaultValue="content" className="space-y-8">
         <TabsList className="inline-flex h-auto w-full justify-start gap-4 rounded-none border-b bg-transparent p-0 flex-wrap">
-          {["content", "meta", "more"].map((feature) => {
+          {['content', 'meta', 'more'].map((feature) => {
             return (
               <TabsTrigger
                 key={feature}
                 value={feature}
                 className="inline-flex items-center gap-2 border-b-2 border-transparent px-8 pb-3 pt-2 data-[state=active]:border-primary capitalize"
               >
-                {feature.split("-").join(" ")}
+                {feature.split('-').join(' ')}
               </TabsTrigger>
             );
           })}

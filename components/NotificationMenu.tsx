@@ -1,6 +1,6 @@
-"use client";
+'use client';
 // import { updateNotificationStatusById } from "@/actions/pos";
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 
 import {
   Sheet,
@@ -11,10 +11,10 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from '@/components/ui/sheet';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 // import { Notification } from "@prisma/client";
 import {
   AlertCircle,
@@ -35,10 +35,10 @@ import {
   Trash,
   User,
   UserRound,
-} from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import toast from "react-hot-toast";
+} from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { toast } from 'sonner';
 
 export function NotificationMenu({
   notifications = [],
@@ -49,7 +49,7 @@ export function NotificationMenu({
   async function handleChangeStatus(id: string) {
     try {
       // await updateNotificationStatusById(id);
-      toast.success("Notification removed successfully");
+      toast.success('Notification removed successfully');
     } catch (error) {
       console.log(error);
     }
@@ -66,7 +66,7 @@ export function NotificationMenu({
         </button>
       </SheetTrigger>
       {notifications && notifications.length > 0 ? (
-        <SheetContent side={"left"} className="w-[400px] sm:w-[540px]">
+        <SheetContent side={'left'} className="w-[400px] sm:w-[540px]">
           <SheetHeader>
             <h2 className="scroll-m-20 text-xl font-semibold tracking-tight first:mt-0 border-b pb-3">
               Notifications ({notifications.length})
@@ -77,21 +77,21 @@ export function NotificationMenu({
             <div className="space-y-3">
               {notifications.map((item, i) => {
                 const statusClass =
-                  item.status === "WARNING"
-                    ? "border-yellow-500 bg-yellow-50"
-                    : item.status === "DANGER"
-                      ? "border-red-500 bg-red-50"
-                      : "border-blue-500 bg-blue-50";
+                  item.status === 'WARNING'
+                    ? 'border-yellow-500 bg-yellow-50'
+                    : item.status === 'DANGER'
+                      ? 'border-red-500 bg-red-50'
+                      : 'border-blue-500 bg-blue-50';
 
                 const textClass =
-                  item.status === "WARNING"
-                    ? "text-yellow-600"
-                    : item.status === "DANGER"
-                      ? "text-red-600"
-                      : "text-blue-600";
+                  item.status === 'WARNING'
+                    ? 'text-yellow-600'
+                    : item.status === 'DANGER'
+                      ? 'text-red-600'
+                      : 'text-blue-600';
 
                 const Icon =
-                  item.status === "WARNING" || item.status === "DANGER"
+                  item.status === 'WARNING' || item.status === 'DANGER'
                     ? AlertCircle
                     : Check;
 
@@ -99,8 +99,8 @@ export function NotificationMenu({
                   <div
                     key={i}
                     className={cn(
-                      "flex justify-between gap-4 py-3 border-b-2 items-center px-3 rounded-md",
-                      statusClass
+                      'flex justify-between gap-4 py-3 border-b-2 items-center px-3 rounded-md',
+                      statusClass,
                     )}
                   >
                     <button className={cn(textClass)}>
@@ -128,7 +128,7 @@ export function NotificationMenu({
           </ScrollArea>
         </SheetContent>
       ) : (
-        <SheetContent side={"left"} className="w-[400px] sm:w-[540px]">
+        <SheetContent side={'left'} className="w-[400px] sm:w-[540px]">
           <SheetHeader>
             <h2 className="scroll-m-20 text-xl font-semibold tracking-tight first:mt-0 border-b pb-3">
               Notifications

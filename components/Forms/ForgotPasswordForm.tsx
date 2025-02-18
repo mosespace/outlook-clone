@@ -1,25 +1,25 @@
-"use client";
-import { CheckCircle2, Loader2, Mail } from "lucide-react";
-import React, { useState } from "react";
-import Link from "next/link";
-import { useForm } from "react-hook-form";
+'use client';
+import { CheckCircle2, Loader2, Mail } from 'lucide-react';
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { useForm } from 'react-hook-form';
 
-import { ForgotPasswordProps, LoginProps } from "@/types/types";
-import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
-import TextInput from "../FormInputs/TextInput";
-import SubmitButton from "../FormInputs/SubmitButton";
-import Logo from "../global/Logo";
-import CustomCarousel from "../frontend/custom-carousel";
-import { sendResetLink } from "@/actions/users";
+import { ForgotPasswordProps, LoginProps } from '@/types/types';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
+import TextInput from '../FormInputs/TextInput';
+import SubmitButton from '../FormInputs/SubmitButton';
+import Logo from '../global/Logo';
+import CustomCarousel from '../frontend/custom-carousel';
+import { sendResetLink } from '@/actions/users';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../ui/card";
-import { Button } from "../ui/button";
+} from '../ui/card';
+import { Button } from '../ui/button';
 export default function ForgotPasswordForm() {
   const [loading, setLoading] = useState(false);
   const {
@@ -28,9 +28,9 @@ export default function ForgotPasswordForm() {
     formState: { errors },
     reset,
   } = useForm<ForgotPasswordProps>();
-  const [passErr, setPassErr] = useState("");
+  const [passErr, setPassErr] = useState('');
   const [success, setSuccess] = useState(false);
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
   const [isResending, setIsResending] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
   const handleResend = async () => {
@@ -55,20 +55,20 @@ export default function ForgotPasswordForm() {
   async function onSubmit(data: ForgotPasswordProps) {
     try {
       setLoading(true);
-      console.log("Data:", data);
+      console.log('Data:', data);
       const res = await sendResetLink(data.email);
       if (res.status === 404) {
         setLoading(false);
-        setPassErr(res?.error ?? "");
+        setPassErr(res?.error ?? '');
         return;
       }
-      toast.success("Reset Instructions sent, Check your email");
+      toast.success('Reset Instructions sent, Check your email');
       setLoading(false);
       setEmail(data.email);
       setSuccess(true);
     } catch (error) {
       setLoading(false);
-      console.error("Network Error:", error);
+      console.error('Network Error:', error);
       // toast.error("Its seems something is wrong with your Network");
     }
   }
@@ -121,7 +121,7 @@ export default function ForgotPasswordForm() {
                 >
                   {resendTimer > 0
                     ? `Resend available in ${resendTimer}s`
-                    : "Resend email"}
+                    : 'Resend email'}
                 </Button>
               </CardFooter>
             </Card>
@@ -157,7 +157,7 @@ export default function ForgotPasswordForm() {
                 </form>
 
                 <p className="mt-6 text-sm text-gray-500">
-                  Remember password ?{" "}
+                  Remember password ?{' '}
                   <Link
                     href="/login"
                     className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"

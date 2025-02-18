@@ -1,28 +1,28 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
-import { generateSlug } from "@/lib/generateSlug";
-import toast from "react-hot-toast";
-import { Category } from "@prisma/client";
-import { CategoryProps } from "@/types/types";
-import FormHeader from "./FormHeader";
-import TextInput from "../FormInputs/TextInput";
-import TextArea from "../FormInputs/TextAreaInput";
-import ImageInput from "../FormInputs/ImageInput";
-import FormFooter from "./FormFooter";
-import { createCategory, updateCategoryById } from "@/actions/categories";
+import { generateSlug } from '@/lib/generateSlug';
+import { toast } from 'sonner';
+import { Category } from '@prisma/client';
+import { CategoryProps } from '@/types/types';
+import FormHeader from './FormHeader';
+import TextInput from '../FormInputs/TextInput';
+import TextArea from '../FormInputs/TextAreaInput';
+import ImageInput from '../FormInputs/ImageInput';
+import FormFooter from './FormFooter';
+import { createCategory, updateCategoryById } from '@/actions/categories';
 
 export type SelectOptionProps = {
   label: string;
@@ -44,13 +44,13 @@ export default function CategoryForm({
   } = useForm<CategoryProps>({
     defaultValues: {
       title: initialData?.title,
-      description: initialData?.description || "",
+      description: initialData?.description || '',
     },
   });
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
-  const initialImage = initialData?.imageUrl || "/placeholder.svg";
+  const initialImage = initialData?.imageUrl || '/placeholder.svg';
   const [imageUrl, setImageUrl] = useState(initialImage);
 
   async function saveCategory(data: CategoryProps) {
@@ -63,22 +63,22 @@ export default function CategoryForm({
         await updateCategoryById(editingId, data);
         setLoading(false);
         // Toast
-        toast.success("Updated Successfully!");
+        toast.success('Updated Successfully!');
         //reset
         reset();
         //route
-        router.push("/dashboard/categories");
-        setImageUrl("/placeholder.svg");
+        router.push('/dashboard/categories');
+        setImageUrl('/placeholder.svg');
       } else {
         await createCategory(data);
         setLoading(false);
         // Toast
-        toast.success("Successfully Created!");
+        toast.success('Successfully Created!');
         //reset
         reset();
-        setImageUrl("/placeholder.svg");
+        setImageUrl('/placeholder.svg');
         //route
-        router.push("/dashboard/categories");
+        router.push('/dashboard/categories');
       }
     } catch (error) {
       setLoading(false);

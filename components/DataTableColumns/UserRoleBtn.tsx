@@ -1,5 +1,5 @@
-"use client";
-import React, { useEffect, useState } from "react";
+'use client';
+import React, { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -8,15 +8,15 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Pencil } from "lucide-react";
-import toast from "react-hot-toast";
-import { Options } from "react-tailwindcss-select/dist/components/type";
-import FormSelectInput from "../FormInputs/FormSelectInput";
-import SubmitButton from "../FormInputs/SubmitButton";
-import { UserWithRoles, RoleOption } from "@/types/types";
-import { getRoles, updateUserRole } from "@/actions/roles";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Pencil } from 'lucide-react';
+import { toast } from 'sonner';
+import { Options } from 'react-tailwindcss-select/dist/components/type';
+import FormSelectInput from '../FormInputs/FormSelectInput';
+import SubmitButton from '../FormInputs/SubmitButton';
+import { UserWithRoles, RoleOption } from '@/types/types';
+import { getRoles, updateUserRole } from '@/actions/roles';
 
 interface UserRoleBtnProps {
   user: UserWithRoles;
@@ -30,8 +30,8 @@ export default function UserRoleBtn({ user }: UserRoleBtnProps) {
   const currentRole = user.roles[0]; // Assuming user has at least one role
 
   const [selectedRole, setSelectedRole] = useState<RoleOption>({
-    label: currentRole?.displayName || "No Role",
-    value: currentRole?.id || "",
+    label: currentRole?.displayName || 'No Role',
+    value: currentRole?.id || '',
   });
 
   useEffect(() => {
@@ -46,8 +46,8 @@ export default function UserRoleBtn({ user }: UserRoleBtnProps) {
           setRoles(dataOptions);
         }
       } catch (error) {
-        console.error("Error fetching roles:", error);
-        toast.error("Failed to load roles");
+        console.error('Error fetching roles:', error);
+        toast.error('Failed to load roles');
       }
     }
     fetchRoles();
@@ -64,12 +64,12 @@ export default function UserRoleBtn({ user }: UserRoleBtnProps) {
         throw new Error(res.error);
       }
 
-      toast.success("Role Updated Successfully");
+      toast.success('Role Updated Successfully');
       // Optionally close dialog or refresh data
     } catch (error) {
       console.error(error);
       toast.error(
-        error instanceof Error ? error.message : "Failed to update role"
+        error instanceof Error ? error.message : 'Failed to update role',
       );
     } finally {
       setLoading(false);

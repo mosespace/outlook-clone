@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from '@/components/ui/card';
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import { Saving } from "@prisma/client";
-import { SavingProps } from "@/types/types";
-import FormHeader from "./FormHeader";
-import TextInput from "../FormInputs/TextInput";
-import FormFooter from "./FormFooter";
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { Saving } from '@prisma/client';
+import { SavingProps } from '@/types/types';
+import FormHeader from './FormHeader';
+import TextInput from '../FormInputs/TextInput';
+import FormFooter from './FormFooter';
 
-import FormSelectInput from "../FormInputs/FormSelectInput";
-import { convertIsoToDateString } from "@/lib/convertISODateToNorma";
-import { createSavings } from "@/actions/savings";
-import { convertDateToIso } from "@/lib/convertDateToIso";
+import FormSelectInput from '../FormInputs/FormSelectInput';
+import { convertIsoToDateString } from '@/lib/convertISODateToNorma';
+import { createSavings } from '@/actions/savings';
+import { convertDateToIso } from '@/lib/convertDateToIso';
 
 export type SelectOptionProps = {
   label: string;
@@ -32,52 +32,52 @@ export interface Member {
 }
 export const months = [
   {
-    label: "January",
-    value: "JANUARY",
+    label: 'January',
+    value: 'JANUARY',
   },
   {
-    label: "February",
-    value: "FEBRUARY",
+    label: 'February',
+    value: 'FEBRUARY',
   },
   {
-    label: "March",
-    value: "MARCH",
+    label: 'March',
+    value: 'MARCH',
   },
   {
-    label: "April",
-    value: "APRIL",
+    label: 'April',
+    value: 'APRIL',
   },
   {
-    label: "May",
-    value: "MAY",
+    label: 'May',
+    value: 'MAY',
   },
   {
-    label: "June",
-    value: "JUNE",
+    label: 'June',
+    value: 'JUNE',
   },
   {
-    label: "July",
-    value: "JULY",
+    label: 'July',
+    value: 'JULY',
   },
   {
-    label: "August",
-    value: "AUGUST",
+    label: 'August',
+    value: 'AUGUST',
   },
   {
-    label: "September",
-    value: "SEPTEMBER",
+    label: 'September',
+    value: 'SEPTEMBER',
   },
   {
-    label: "October",
-    value: "OCTOBER",
+    label: 'October',
+    value: 'OCTOBER',
   },
   {
-    label: "November",
-    value: "NOVEMBER",
+    label: 'November',
+    value: 'NOVEMBER',
   },
   {
-    label: "December",
-    value: "DECEMBER",
+    label: 'December',
+    value: 'DECEMBER',
   },
 ];
 export default function SavingForm({
@@ -119,21 +119,21 @@ export default function SavingForm({
         // await updateCategoryById(editingId, data);
         setLoading(false);
         // Toast
-        toast.success("Updated Successfully!");
+        toast.success('Updated Successfully!');
         //reset
         reset();
         //route
-        router.push("/dashboard/savings");
+        router.push('/dashboard/savings');
       } else {
         // console.log(data);
         await createSavings(data);
         setLoading(false);
         // Toast
-        toast.success("Successfully Created!");
+        toast.success('Successfully Created!');
         //reset
         reset();
         //route
-        router.push("/dashboard/savings");
+        router.push('/dashboard/savings');
       }
     } catch (error) {
       setLoading(false);

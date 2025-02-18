@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { Card, CardContent } from "@/components/ui/card";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { User as PrismaUser } from "@prisma/client";
+import { Card, CardContent } from '@/components/ui/card';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { User as PrismaUser } from '@prisma/client';
 
-import TextInput from "../FormInputs/TextInput";
-import FormFooter from "./FormFooter";
-import { updateUserPassword } from "@/actions/users";
-import PasswordInput from "../FormInputs/PasswordInput";
-import { Lock, LockOpen } from "lucide-react";
-import { signOut } from "next-auth/react";
-import toast from "react-hot-toast";
+import TextInput from '../FormInputs/TextInput';
+import FormFooter from './FormFooter';
+import { updateUserPassword } from '@/actions/users';
+import PasswordInput from '../FormInputs/PasswordInput';
+import { Lock, LockOpen } from 'lucide-react';
+import { signOut } from 'next-auth/react';
+import { toast } from 'sonner';
 
 export type PasswordProps = {
   oldPassword: string;
@@ -37,12 +37,12 @@ export default function ChangePasswordForm({
     formState: { errors },
   } = useForm<PasswordProps>({
     defaultValues: {
-      oldPassword: "",
-      newPassword: "",
+      oldPassword: '',
+      newPassword: '',
     },
   });
   const router = useRouter();
-  const [passErr, setPassErr] = useState("");
+  const [passErr, setPassErr] = useState('');
   const [loading, setLoading] = useState(false);
 
   async function onSubmit(data: PasswordProps) {
@@ -57,16 +57,16 @@ export default function ChangePasswordForm({
         }
         if (res?.status === 200) {
           setLoading(false);
-          toast.success("Password Updated Successfully!");
+          toast.success('Password Updated Successfully!');
           reset();
           await signOut();
-          router.push("/login");
+          router.push('/login');
         }
       }
     } catch (error) {
       setLoading(false);
-      console.error("Network Error:", error);
-      toast.error("Its seems something is wrong, try again");
+      console.error('Network Error:', error);
+      toast.error('Its seems something is wrong, try again');
     }
   }
 
