@@ -21,11 +21,11 @@ export default async function RootLayout({
   const session = await getServerSession(authOptions);
 
   // Add routing logic based on session
-  if (!session) {
-    redirect('/login');
-  } else {
-    redirect('/mail');
-  }
+  // if (!session) {
+  //   redirect('/login');
+  // } else {
+  //   redirect('/mail');
+  // }
 
   return (
     <html lang="en" suppressHydrationWarning>
