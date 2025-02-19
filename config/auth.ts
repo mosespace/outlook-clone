@@ -90,7 +90,7 @@ export const authOptions: NextAuthOptions = {
             phone: existingUser.phone,
             image: existingUser.image,
             email: existingUser.email,
-            role: existingUser.roleId,
+            role: existingUser.role,
           };
         } catch (error) {
           console.error('Authentication error:', error);

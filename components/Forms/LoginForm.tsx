@@ -4,13 +4,14 @@ import { Eye, EyeOff, Loader2, Lock, Mail } from 'lucide-react';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import type { LoginProps } from '@/types/types';
 
 const socials = [
@@ -24,9 +25,20 @@ const socials = [
   { src: 'https://outlook-clone-five.vercel.app/Outlook-5.svg', alt: 'iCloud' },
 ];
 
+// Function to get user-friendly error message
+const getErrorMessage = (error: string) => {
+  switch (error) {
+    case 'OAuthAccountNotLinked':
+      return 'An account with this email already exists. Please sign in with the method you used previously.';
+    default:
+      return 'An error occurred during sign in. Please try again.';
+  }
+};
+
 export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const {
     handleSubmit,
     register,
@@ -38,10 +50,19 @@ export default function LoginForm() {
   const [passErr, setPassErr] = useState('');
   const router = useRouter();
 
+  // Handle URL error parameters
+  useEffect(() => {
+    const error = params.get('error');
+    if (error) {
+      setErrorMessage(getErrorMessage(error));
+    }
+  }, [params]);
+
   async function onSubmit(data: LoginProps) {
     try {
       setLoading(true);
       setPassErr('');
+      setErrorMessage(null);
       const loginData = await signIn('credentials', {
         ...data,
         redirect: false,
@@ -69,6 +90,7 @@ export default function LoginForm() {
   const handleGoogleSignIn = async () => {
     try {
       setLoading(true);
+      setErrorMessage(null);
       await signIn('google');
     } catch (error) {
       setLoading(false);
@@ -86,6 +108,12 @@ export default function LoginForm() {
       <div className="relative z-10 min-h-screen w-full flex items-center justify-center p-4">
         <Card className="w-full max-w-[400px] shadow-xl backdrop-blur-sm bg-white/90">
           <CardContent className="p-8 space-y-6">
+            {errorMessage && (
+              <Alert variant="destructive" className="mb-4">
+                <AlertDescription>{errorMessage}</AlertDescription>
+              </Alert>
+            )}
+
             <div className="text-center space-y-3">
               <h1 className="text-2xl font-bold text-gray-900">
                 Welcome to the new Outlook

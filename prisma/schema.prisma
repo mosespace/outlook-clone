@@ -43,31 +43,17 @@ enum UserRole {
   SERVICE_PROVIDER
 }
 
-model Role {
-  id          String   @id @default(cuid())
-  displayName String // Human-readable name (e.g., "Store Manager")
-  roleName    String   @unique // System name (e.g., "store_manager")
-  description String?
-  permissions String[] // Array of permission strings
-  users       User[]   @relation("UserRoles")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@index([roleName])
-}
-
 model User {
   id            String    @id @default(cuid())
-  name          String
-  firstName     String
-  lastName      String
-  phone         String    @unique
+  name          String?
+  firstName     String?
+  lastName      String?
+  phone         String?   @unique
   email         String    @unique
   emailVerified DateTime?
   image         String?
   jobTitle      String?
-  roles         Role[]    @relation("UserRoles") // Updated to support multiple roles
-  // role          UserRole  @default(USER)
+  role           UserRole  @default(USER)
   password      String?
   status        Boolean   @default(true)
   accounts      Account[]
@@ -79,10 +65,10 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   roleId        String?
-  
+
   // Email relations
-  sentEmails     Email[]  @relation("SentEmails")
-  receivedEmails Email[]  @relation("ReceivedEmails")
+  sentEmails     Email[] @relation("SentEmails")
+  receivedEmails Email[] @relation("ReceivedEmails")
 }
 
 model Category {
@@ -150,16 +136,16 @@ model Email {
   isRead    Boolean  @default(false)
   isPinned  Boolean  @default(false)
   labels    String[]
-  section   String?  // 'Today', 'Yesterday', etc.
-  
+  section   String? // 'Today', 'Yesterday', etc.
+
   // Calendar event related fields
-  hasCalendar     Boolean  @default(false)
-  calendarDate    DateTime?
-  calendarAction  String?
+  hasCalendar    Boolean   @default(false)
+  calendarDate   DateTime?
+  calendarAction String?
 
   // Relations
-  sender    User     @relation("SentEmails", fields: [from], references: [email])
-  receivers User[]   @relation("ReceivedEmails")
+  sender    User   @relation("SentEmails", fields: [from], references: [email])
+  receivers User[] @relation("ReceivedEmails")
 
   @@index([from])
 }
