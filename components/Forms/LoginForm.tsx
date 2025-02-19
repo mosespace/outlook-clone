@@ -70,7 +70,8 @@ export default function LoginForm() {
         <div
           className="absolute bottom-0 left-0 right-0 h-[40vh] bg-cover bg-bottom opacity-40"
           style={{
-            backgroundImage: "url('/images/bg.jpg')",
+            backgroundImage:
+              "url('https://img.freepik.com/free-vector/blue-white-gradient-abstract-background_53876-60240.jpg?t=st=1739941695~exp=1739945295~hmac=a60287017d0b29cf7fde7949a5bedb34c3ec5dfbcb296f6cbb3ab83f05ef8c94&w=740')",
             maskImage: 'linear-gradient(to top, black, transparent)',
           }}
         />
@@ -87,19 +88,27 @@ export default function LoginForm() {
               <div className="flex justify-center">
                 <div className="flex space-x-2 items-center cursor-pointer">
                   <img
-                    src="/Outlook-1.svg"
+                    src="https://outlook-clone-five.vercel.app/Outlook-1.svg"
                     alt="Outlook"
                     className="w-10 h-10"
                   />
-                  <img src="/Outlook-2.svg" alt="Gmail" className="w-10 h-10" />
-                  <img src="/Outlook-3.svg" alt="Yahoo" className="w-10 h-10" />
                   <img
-                    src="/Outlook-4.svg"
+                    src="https://outlook-clone-five.vercel.app/Outlook-2.svg"
+                    alt="Gmail"
+                    className="w-10 h-10"
+                  />
+                  <img
+                    src="https://outlook-clone-five.vercel.app/Outlook-3.svg"
+                    alt="Yahoo"
+                    className="w-10 h-10"
+                  />
+                  <img
+                    src="https://outlook-clone-five.vercel.app/Outlook-4.svg"
                     alt="iCloud"
                     className="w-10 h-10"
                   />
                   <img
-                    src="/Outlook-5.svg"
+                    src="https://outlook-clone-five.vercel.app/Outlook-5.svg"
                     alt="iCloud"
                     className="w-10 h-10"
                   />

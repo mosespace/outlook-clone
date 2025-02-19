@@ -1,34 +1,11 @@
-import { AuthOptions, NextAuthOptions } from 'next-auth';
+import { db } from '@/prisma/db';
 import { PrismaAdapter } from '@auth/prisma-adapter';
-import GoogleProvider from 'next-auth/providers/google';
-import GitHubProvider from 'next-auth/providers/github';
+import { compare } from 'bcrypt';
+import { NextAuthOptions } from 'next-auth';
 import type { Adapter } from 'next-auth/adapters';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { compare } from 'bcrypt';
-import { db } from '@/prisma/db';
-
-// Helper function to get user with roles and permissions
-async function getUserWithRoles(userId: string) {
-  const user = await db.user.findUnique({
-    where: { id: userId },
-    include: {
-      roles: true, // Include roles relation
-    },
-  });
-
-  if (!user) return null;
-
-  // Get all permissions from user's roles
-  const permissions = user.roles.flatMap((role) => role.permissions);
-
-  // Remove duplicates from permissions
-  const uniquePermissions = [...new Set(permissions)];
-
-  return {
-    ...user,
-    permissions: uniquePermissions,
-  };
-}
+import GitHubProvider from 'next-auth/providers/github';
+import GoogleProvider from 'next-auth/providers/google';
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db) as Adapter,
@@ -41,44 +18,32 @@ export const authOptions: NextAuthOptions = {
   },
   providers: [
     GitHubProvider({
-      async profile(profile) {
-        // Find or create default role
-        const defaultRole = await db.role.findFirst({
-          where: { roleName: 'user' },
-        });
-
+      profile(profile): any {
         return {
           id: profile.id.toString(),
           name: profile.name || profile.login,
-          firstName: profile.name?.split(' ')[0] || '',
-          lastName: profile.name?.split(' ')[1] || '',
-          phone: '',
+          firstName: profile.name?.split(' ')[0] || null,
+          lastName: profile.name?.split(' ')[1] || null,
+          phone: null,
           image: profile.avatar_url,
           email: profile.email,
-          roles: defaultRole ? [defaultRole] : [],
-          permissions: defaultRole ? defaultRole.permissions : [], // Include permissions from default role
+          role: 'USER',
         };
       },
       clientId: process.env.GITHUB_CLIENT_ID || '',
       clientSecret: process.env.GITHUB_SECRET || '',
     }),
     GoogleProvider({
-      async profile(profile) {
-        // Find or create default role
-        const defaultRole = await db.role.findFirst({
-          where: { roleName: 'user' },
-        });
-
+      profile(profile): any {
         return {
           id: profile.sub,
           name: `${profile.given_name} ${profile.family_name}`,
           firstName: profile.given_name,
           lastName: profile.family_name,
-          phone: '',
+          phone: null,
           image: profile.picture,
           email: profile.email,
-          roles: defaultRole ? [defaultRole] : [],
-          permissions: defaultRole ? defaultRole.permissions : [], // Include permissions from default role
+          role: 'USER',
         };
       },
       clientId: process.env.GOOGLE_CLIENT_ID || '',
@@ -87,45 +52,35 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
-        email: { label: 'Email', type: 'text', placeholder: 'jb@gmail.com' },
+        email: { label: 'Email', type: 'email', placeholder: 'jb@gmail.com' },
         password: { label: 'Password', type: 'password' },
       },
-      async authorize(credentials) {
+      async authorize(credentials, req): Promise<any | null> {
         try {
           if (!credentials?.email || !credentials?.password) {
-            throw { error: 'No Inputs Found', status: 401 };
+            return null;
           }
 
           const existingUser = await db.user.findUnique({
             where: { email: credentials.email },
-            include: {
-              roles: true, // Include roles relation
-            },
           });
 
           if (!existingUser) {
-            throw { error: 'No user found', status: 401 };
+            return null;
           }
 
-          let passwordMatch: boolean = false;
-          if (existingUser && existingUser.password) {
-            passwordMatch = await compare(
-              credentials.password,
-              existingUser.password,
-            );
+          if (!existingUser.password) {
+            return null;
           }
 
-          if (!passwordMatch) {
-            throw { error: 'Password Incorrect', status: 401 };
-          }
-
-          // Get all permissions from user's roles
-          const permissions = existingUser.roles.flatMap(
-            (role) => role.permissions,
+          const passwordMatch = await compare(
+            credentials.password,
+            existingUser.password,
           );
 
-          // Remove duplicates from permissions
-          const uniquePermissions = [...new Set(permissions)];
+          if (!passwordMatch) {
+            return null;
+          }
 
           return {
             id: existingUser.id,
@@ -135,80 +90,33 @@ export const authOptions: NextAuthOptions = {
             phone: existingUser.phone,
             image: existingUser.image,
             email: existingUser.email,
-            roles: existingUser.roles,
-            permissions: uniquePermissions,
+            role: existingUser.roleId,
           };
         } catch (error) {
-          throw { error: 'Something went wrong', status: 401 };
+          console.error('Authentication error:', error);
+          return null;
         }
       },
     }),
   ],
   callbacks: {
-    async signIn({ user, account }) {
-      // For OAuth providers, assign default role if user is new
-      if (
-        account &&
-        (account.provider === 'google' || account.provider === 'github')
-      ) {
-        const existingUser = await db.user.findUnique({
-          where: { email: user.email! },
-          include: { roles: true },
-        });
-
-        if (!existingUser?.roles?.length) {
-          // Assign default user role
-          const defaultRole = await db.role.findFirst({
-            where: { roleName: 'user' },
-          });
-
-          if (defaultRole) {
-            await db.user.update({
-              where: { email: user.email! },
-              data: {
-                roles: {
-                  connect: { id: defaultRole.id },
-                },
-              },
-            });
-          }
-        }
-      }
-      return true;
-    },
     async jwt({ token, user }) {
       if (user) {
-        // For initial sign in
         token.id = user.id;
         token.name = user.name;
         token.email = user.email;
         token.picture = user.image;
-        token.firstName = user.firstName;
-        token.lastName = user.lastName;
-        token.phone = user.phone;
-        token.roles = user.roles;
-        token.permissions = user.permissions;
-      } else {
-        // For subsequent requests, refresh roles and permissions
-        const userData = await getUserWithRoles(token.id);
-        if (userData) {
-          token.roles = userData.roles;
-          token.permissions = userData.permissions;
-        }
+        token.role = (user as any).role;
       }
       return token;
     },
     async session({ session, token }) {
-      if (session.user && token) {
-        session.user.id = token.id;
+      if (session.user) {
+        session.user.id = token.id as string;
         session.user.name = token.name;
         session.user.email = token.email;
-        session.user.image = token.picture;
-        session.user.firstName = token.firstName;
-        session.user.lastName = token.lastName;
-        session.user.phone = token.phone;
-        session.user.roles = token.roles;
-        session.user.permissions = token.permissions;
+        session.user.image = token.picture as string | null;
+        (session.user as any).role = token.role;
       }
       return session;
     },
