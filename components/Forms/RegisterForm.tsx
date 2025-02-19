@@ -1,22 +1,45 @@
 'use client';
-import { Headset, Loader2, Lock, Mail, User } from 'lucide-react';
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { useForm } from 'react-hook-form';
-import { UserProps } from '@/types/types';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
-import TextInput from '../FormInputs/TextInput';
-import PasswordInput from '../FormInputs/PasswordInput';
-import SubmitButton from '../FormInputs/SubmitButton';
-import { createUser } from '@/actions/users';
-import CustomCarousel from '../frontend/custom-carousel';
-import { Button } from '../ui/button';
+
+import { Eye, EyeOff, Headset, Loader2, Lock, Mail, User } from 'lucide-react';
 import { signIn } from 'next-auth/react';
-import { FaGithub, FaGoogle } from 'react-icons/fa';
-import Logo from '../global/Logo';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
+
+import { createUser } from '@/actions/users';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import type { UserProps } from '@/types/types';
+
+const socials = [
+  {
+    src: 'https://outlook-clone-five.vercel.app/Outlook-1.svg',
+    alt: 'Outlook',
+  },
+  {
+    src: 'https://outlook-clone-five.vercel.app/Outlook-2.svg',
+    alt: 'Gmail',
+  },
+  {
+    src: 'https://outlook-clone-five.vercel.app/Outlook-3.svg',
+    alt: 'Yahoo',
+  },
+  {
+    src: 'https://outlook-clone-five.vercel.app/Outlook-4.svg',
+    alt: 'iCloud',
+  },
+  {
+    src: 'https://outlook-clone-five.vercel.app/Outlook-5.svg',
+    alt: 'iCloud',
+  },
+];
+
 export default function RegisterForm() {
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [emailErr, setEmailErr] = useState<string | null>(null);
   const {
     handleSubmit,
@@ -24,7 +47,9 @@ export default function RegisterForm() {
     formState: { errors },
     reset,
   } = useForm<UserProps>();
+
   const router = useRouter();
+
   async function onSubmit(data: UserProps) {
     setLoading(true);
     data.name = `${data.firstName} ${data.lastName}`;
@@ -38,7 +63,7 @@ export default function RegisterForm() {
       } else if (res.status === 200) {
         setLoading(false);
         toast.success('Account Created successfully');
-        router.push('/');
+        router.push('/login');
       } else {
         setLoading(false);
         toast.error('Something went wrong');
@@ -46,130 +71,213 @@ export default function RegisterForm() {
     } catch (error) {
       setLoading(false);
       console.error('Network Error:', error);
-      toast.error('Its seems something is wrong, try again');
+      toast.error('It seems something is wrong, try again');
     }
   }
+
   return (
-    <div className="w-full lg:grid h-screen lg:min-h-[600px] lg:grid-cols-2 relative ">
-      <div className="flex items-center justify-center py-12">
-        <div className="mx-auto grid  gap-6 mt-10 md:mt-0">
-          <div className="absolute left-1/3 top-14 md:top-5 md:left-5">
-            <Logo />
-          </div>
-          <div className="grid gap-2 text-center mt-10 md:mt-0">
-            <h1 className="text-3xl font-bold">Create an account</h1>
-            <p className="text-muted-foreground text-sm">
-              Create your <span className="text-blue-600">Next Admin</span>{' '}
-              Account today to get started
-            </p>
-          </div>
-          <div className="">
-            <form className="space-y-3" onSubmit={handleSubmit(onSubmit)}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <TextInput
-                  register={register}
-                  errors={errors}
-                  label="First Name"
-                  name="firstName"
-                  icon={User}
-                  placeholder="first Name"
-                />
-                <TextInput
-                  register={register}
-                  errors={errors}
-                  label="Last Name"
-                  name="lastName"
-                  icon={User}
-                  placeholder="last Name"
-                />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <TextInput
-                  register={register}
-                  errors={errors}
-                  label="Phone"
-                  name="phone"
-                  icon={Headset}
-                  placeholder="phone"
-                />
-                <div className="">
-                  <TextInput
-                    type="email"
-                    register={register}
-                    errors={errors}
-                    label="Email Address"
-                    name="email"
-                    icon={Mail}
-                    placeholder="email"
-                    isRequired={false}
+    <div className="min-h-screen w-full relative overflow-hidden bg-gradient-to-br from-blue-50 to-blue-100">
+      <div
+        className="absolute inset-0 bg-cover bg-center opacity-10"
+        style={{ backgroundImage: "url('/login-bg.jpg')" }}
+      />
+      <div className="relative z-10 min-h-screen w-full flex items-center justify-center p-4">
+        <Card className="w-full max-w-[500px] shadow-xl backdrop-blur-sm bg-white/90">
+          <CardContent className="p-8 space-y-6">
+            <div className="text-center space-y-3">
+              <h1 className="text-3xl font-bold text-gray-900">
+                Create Your Account
+              </h1>
+              <p className="text-sm text-gray-600">
+                Join{' '}
+                <span className="text-blue-600 font-semibold">OutLook</span> and
+                enjoy exclusive privileges
+              </p>
+              <div className="flex justify-center space-x-3">
+                {socials.map((social, index) => (
+                  <img
+                    key={index}
+                    src={social.src || '/placeholder.svg'}
+                    alt={social.alt}
+                    className="w-8 h-8 transition-transform hover:scale-110"
                   />
-                </div>
+                ))}
+              </div>
+            </div>
+
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <InputField
+                  register={register}
+                  name="firstName"
+                  placeholder="First Name"
+                  icon={<User className="w-4 h-4 text-gray-400" />}
+                  error={errors.firstName}
+                />
+                <InputField
+                  register={register}
+                  name="lastName"
+                  placeholder="Last Name"
+                  icon={<User className="w-4 h-4 text-gray-400" />}
+                  error={errors.lastName}
+                />
               </div>
 
-              <PasswordInput
-                register={register}
-                errors={errors}
-                label="Password"
-                name="password"
-                icon={Lock}
-                placeholder="password"
-                type="password"
-              />
-              <div className="">
-                {emailErr && (
-                  <p className="text-red-500 text-xs mt-2">{emailErr}</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <InputField
+                  register={register}
+                  name="phone"
+                  placeholder="Phone"
+                  icon={<Headset className="w-4 h-4 text-gray-400" />}
+                  error={errors.phone}
+                />
+                <InputField
+                  register={register}
+                  name="email"
+                  placeholder="Email"
+                  icon={<Mail className="w-4 h-4 text-gray-400" />}
+                  error={errors.email || emailErr}
+                />
+              </div>
+
+              <div className="relative">
+                <Input
+                  {...register('password', {
+                    required: 'Password is required',
+                  })}
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Password"
+                  className="pl-10 pr-10"
+                />
+                <Lock className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+                {errors.password && (
+                  <p className="text-xs text-red-500 mt-1">
+                    {errors.password.message}
+                  </p>
                 )}
               </div>
-              <div>
-                <SubmitButton
-                  title="Sign Up"
-                  loadingTitle="Creating Please wait.."
-                  loading={loading}
-                  className="w-full"
-                  loaderIcon={Loader2}
-                  showIcon={false}
-                />
-              </div>
+
+              <Button
+                type="submit"
+                className="w-full bg-blue-600 hover:bg-blue-700 transition-colors"
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Creating account...
+                  </>
+                ) : (
+                  'Sign Up'
+                )}
+              </Button>
             </form>
-            <div className="flex items-center py-4 justify-center space-x-1 text-slate-900">
-              <div className="h-[1px] w-full bg-slate-200"></div>
-              <div className="uppercase">Or</div>
-              <div className="h-[1px] w-full bg-slate-200"></div>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-200" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-white px-2 text-gray-500">
+                  Or sign up with
+                </span>
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <Button
+            <div className="flex justify-center space-x-4">
+              <SocialButton
+                onClick={() => signIn('microsoft')}
+                imgSrc="https://cdn-icons-png.flaticon.com/128/732/732221.png"
+                alt="Microsoft"
+              />
+              <SocialButton
                 onClick={() => signIn('google')}
-                variant={'outline'}
-                className="w-full"
-              >
-                <FaGoogle className="mr-2 w-6 h-6 text-red-500" />
-                Login with Google
-              </Button>
-              <Button
+                imgSrc="https://cdn-icons-png.flaticon.com/128/281/281764.png"
+                alt="Google"
+              />
+              <SocialButton
                 onClick={() => signIn('github')}
-                variant={'outline'}
-                className="w-full"
-              >
-                <FaGithub className="mr-2 w-6 h-6 text-slate-900 dark:text-white" />
-                Login with Github
-              </Button>
+                imgSrc="https://cdn-icons-png.flaticon.com/128/5968/5968764.png"
+                alt="GitHub"
+              />
             </div>
-            <p className="mt-6 text-sm text-gray-500">
-              Already Registered ?{' '}
+
+            <p className="text-center text-sm text-gray-500">
+              Already have an account?{' '}
               <Link
                 href="/login"
-                className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+                className="font-semibold text-blue-600 hover:text-blue-500 transition-colors"
               >
-                Login
+                Log in
               </Link>
             </p>
-          </div>
-        </div>
-      </div>
-      <div className="hidden bg-muted lg:block relative">
-        <CustomCarousel />
+          </CardContent>
+        </Card>
       </div>
     </div>
+  );
+}
+
+function InputField({
+  register,
+  name,
+  placeholder,
+  icon,
+  error,
+}: {
+  register: any;
+  name: string;
+  placeholder: string;
+  icon: any;
+  error: any;
+}) {
+  return (
+    <div className="space-y-1">
+      <div className="relative">
+        <Input
+          {...register(name, { required: `${placeholder} is required` })}
+          placeholder={placeholder}
+          className="pl-10"
+        />
+        <span className="absolute left-3 top-3">{icon}</span>
+      </div>
+      {error && <p className="text-xs text-red-500">{error.message}</p>}
+    </div>
+  );
+}
+
+function SocialButton({
+  onClick,
+  imgSrc,
+  alt,
+}: {
+  onClick: () => void;
+  imgSrc: string;
+  alt: string;
+}) {
+  return (
+    <Button
+      variant="outline"
+      size="icon"
+      onClick={onClick}
+      className="w-10 h-10 rounded-full hover:bg-gray-100 transition-colors"
+    >
+      <img
+        src={imgSrc || '/placeholder.svg'}
+        alt={alt}
+        className="w-5 h-5 object-contain"
+      />
+    </Button>
   );
 }

@@ -1,45 +1,41 @@
 'use client';
+
 import { CheckCircle2, Loader2, Mail } from 'lucide-react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-
-import { ForgotPasswordProps, LoginProps } from '@/types/types';
 import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
-import TextInput from '../FormInputs/TextInput';
-import SubmitButton from '../FormInputs/SubmitButton';
+
+import type { ForgotPasswordProps } from '@/types/types';
+import { sendResetLink } from '@/actions/users';
 import Logo from '../global/Logo';
 import CustomCarousel from '../frontend/custom-carousel';
-import { sendResetLink } from '@/actions/users';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '../ui/card';
-import { Button } from '../ui/button';
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+
 export default function ForgotPasswordForm() {
   const [loading, setLoading] = useState(false);
   const {
     handleSubmit,
     register,
     formState: { errors },
-    reset,
   } = useForm<ForgotPasswordProps>();
   const [passErr, setPassErr] = useState('');
   const [success, setSuccess] = useState(false);
   const [email, setEmail] = useState('');
   const [isResending, setIsResending] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
+
   const handleResend = async () => {
     setIsResending(true);
-
-    // Simulate API call
     await sendResetLink(email);
-
-    // Start cooldown timer (60 seconds)
     setResendTimer(60);
     const timer = setInterval(() => {
       setResendTimer((prev) => {
@@ -52,50 +48,55 @@ export default function ForgotPasswordForm() {
       });
     }, 1000);
   };
+
   async function onSubmit(data: ForgotPasswordProps) {
     try {
       setLoading(true);
-      console.log('Data:', data);
       const res = await sendResetLink(data.email);
       if (res.status === 404) {
         setLoading(false);
         setPassErr(res?.error ?? '');
         return;
       }
-      toast.success('Reset Instructions sent, Check your email');
+      toast.success('Reset instructions sent. Check your email');
       setLoading(false);
       setEmail(data.email);
       setSuccess(true);
     } catch (error) {
       setLoading(false);
       console.error('Network Error:', error);
-      // toast.error("Its seems something is wrong with your Network");
+      toast.error('There seems to be a network issue. Please try again.');
     }
   }
+
   return (
-    <div className="w-full lg:grid h-screen lg:min-h-[600px] lg:grid-cols-2 relative ">
-      <div className="flex items-center justify-center py-12">
-        <div className="mx-auto grid w-[400px] gap-6 mt-10 md:mt-0">
-          <div className="absolute left-1/3 top-14 md:top-5 md:left-5">
-            <Logo />
-          </div>
-          {success ? (
-            <Card className="w-full max-w-md mx-auto">
-              <CardHeader className="space-y-3">
+    <div className="min-h-screen w-full relative overflow-hidden bg-gradient-to-br from-blue-50 to-blue-100">
+      <div
+        className="absolute inset-0 bg-cover bg-center opacity-10"
+        style={{ backgroundImage: "url('/login-bg.jpg')" }}
+      />
+      <div className="relative z-10 min-h-screen w-full flex items-center justify-center p-4">
+        <Card className="w-full max-w-[400px] shadow-xl backdrop-blur-sm bg-white/90">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl font-bold text-center">
+              {success ? 'Check your email' : 'Forgot Password?'}
+            </CardTitle>
+            {!success && (
+              <p className="text-sm text-muted-foreground text-center">
+                No worries, we'll send you reset instructions
+              </p>
+            )}
+          </CardHeader>
+          <CardContent>
+            {success ? (
+              <div className="space-y-4">
                 <div className="flex justify-center">
                   <CheckCircle2 className="h-12 w-12 text-green-500" />
                 </div>
-                <CardTitle className="text-center text-2xl">
-                  Check your email
-                </CardTitle>
-              </CardHeader>
-
-              <CardContent className="space-y-4">
                 <div className="text-center text-gray-600">
                   We've sent password reset instructions to:
                   <div className="mt-2 font-medium text-gray-900">{email}</div>
                 </div>
-
                 <div className="bg-blue-50 p-4 rounded-lg">
                   <div className="flex items-start space-x-3">
                     <Mail className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
@@ -107,71 +108,74 @@ export default function ForgotPasswordForm() {
                     </div>
                   </div>
                 </div>
-              </CardContent>
-
-              <CardFooter className="flex flex-col space-y-3">
-                <div className="text-sm text-center text-gray-600">
-                  Didn't receive the email?
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <div className="space-y-2">
+                  <div className="relative">
+                    <Input
+                      {...register('email', {
+                        required: 'Email is required',
+                        pattern: {
+                          value: /\S+@\S+\.\S+/,
+                          message: 'Invalid email address',
+                        },
+                      })}
+                      type="email"
+                      placeholder="Email"
+                      className="pl-10"
+                    />
+                    <Mail className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                  </div>
+                  {errors.email && (
+                    <p className="text-xs text-red-500">
+                      {errors.email.message}
+                    </p>
+                  )}
+                  {passErr && <p className="text-xs text-red-500">{passErr}</p>}
                 </div>
                 <Button
-                  variant="outline"
-                  onClick={handleResend}
-                  disabled={isResending}
-                  className="w-full"
+                  type="submit"
+                  className="w-full bg-blue-600 hover:bg-blue-700 transition-colors"
+                  disabled={loading}
                 >
-                  {resendTimer > 0
-                    ? `Resend available in ${resendTimer}s`
-                    : 'Resend email'}
+                  {loading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    'Send Reset Link'
+                  )}
                 </Button>
-              </CardFooter>
-            </Card>
-          ) : (
-            <div className="">
-              <div className="grid gap-2 mt-10 md:mt-0">
-                <h1 className="text-3xl font-bold">Forgot Password?</h1>
-                <p className="text-muted-foreground text-sm">
-                  No worries, we'll send you reset instructions
-                </p>
-              </div>
-              <div className="">
-                <form className="space-y-3" onSubmit={handleSubmit(onSubmit)}>
-                  <TextInput
-                    register={register}
-                    errors={errors}
-                    label="Email Address"
-                    name="email"
-                    icon={Mail}
-                    placeholder="email"
-                  />
-                  {passErr && <p className="text-red-500 text-xs">{passErr}</p>}
-                  <div>
-                    <SubmitButton
-                      title="Send Reset Link"
-                      loadingTitle="Loading Please wait.."
-                      loading={loading}
-                      className="w-full"
-                      loaderIcon={Loader2}
-                      showIcon={false}
-                    />
-                  </div>
-                </form>
-
-                <p className="mt-6 text-sm text-gray-500">
-                  Remember password ?{' '}
-                  <Link
-                    href="/login"
-                    className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
-                  >
-                    Login
-                  </Link>
-                </p>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-      <div className="hidden bg-muted lg:block relative">
-        <CustomCarousel />
+              </form>
+            )}
+          </CardContent>
+          <CardFooter className="flex flex-col space-y-4">
+            {success ? (
+              <Button
+                variant="outline"
+                onClick={handleResend}
+                disabled={isResending}
+                className="w-full"
+              >
+                {resendTimer > 0
+                  ? `Resend available in ${resendTimer}s`
+                  : 'Resend email'}
+              </Button>
+            ) : (
+              <p className="text-sm text-center text-gray-600">
+                Remember your password?{' '}
+                <Link
+                  href="/login"
+                  className="font-semibold text-blue-600 hover:text-blue-800 transition-colors"
+                >
+                  Back to Login
+                </Link>
+              </p>
+            )}
+          </CardFooter>
+        </Card>
       </div>
     </div>
   );

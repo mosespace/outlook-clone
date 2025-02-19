@@ -1,17 +1,28 @@
 'use client';
 
 import { Eye, EyeOff, Loader2, Lock, Mail } from 'lucide-react';
-import { useState } from 'react';
-import Link from 'next/link';
-import { useForm } from 'react-hook-form';
 import { signIn } from 'next-auth/react';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
-import type { LoginProps } from '@/types/types';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import type { LoginProps } from '@/types/types';
+
+const socials = [
+  {
+    src: 'https://outlook-clone-five.vercel.app/Outlook-1.svg',
+    alt: 'Outlook',
+  },
+  { src: 'https://outlook-clone-five.vercel.app/Outlook-2.svg', alt: 'Gmail' },
+  { src: 'https://outlook-clone-five.vercel.app/Outlook-3.svg', alt: 'Yahoo' },
+  { src: 'https://outlook-clone-five.vercel.app/Outlook-4.svg', alt: 'iCloud' },
+  { src: 'https://outlook-clone-five.vercel.app/Outlook-5.svg', alt: 'iCloud' },
+];
 
 export default function LoginForm() {
   const [loading, setLoading] = useState(false);
@@ -36,6 +47,8 @@ export default function LoginForm() {
         redirect: false,
       });
 
+      console.log('LogIn Data: ✅', loginData);
+
       if (loginData?.error) {
         setLoading(false);
         toast.error('Sign-in error: Check your credentials');
@@ -52,6 +65,7 @@ export default function LoginForm() {
       console.error('Network Error:', error);
     }
   }
+
   const handleGoogleSignIn = async () => {
     try {
       setLoading(true);
@@ -64,82 +78,45 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen w-full relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-blue-100">
-        <div
-          className="absolute bottom-0 left-0 right-0 h-[40vh] bg-cover bg-bottom opacity-40"
-          style={{
-            backgroundImage: "url('/login-bg.jpg')",
-            maskImage: 'linear-gradient(to top, black, transparent)',
-          }}
-        />
-      </div>
-
-      {/* Content */}
+    <div className="min-h-screen w-full relative overflow-hidden bg-gradient-to-br from-blue-50 to-blue-100">
+      <div
+        className="absolute inset-0 bg-cover bg-center opacity-10"
+        style={{ backgroundImage: "url('/login-bg.jpg')" }}
+      />
       <div className="relative z-10 min-h-screen w-full flex items-center justify-center p-4">
-        <Card className="w-full max-w-[400px] shadow-lg backdrop-blur-sm bg-white/95">
-          <CardContent className="p-6 space-y-6">
-            <div className="text-center space-y-2">
-              <h1 className="text-xl font-semibold text-gray-900">
+        <Card className="w-full max-w-[400px] shadow-xl backdrop-blur-sm bg-white/90">
+          <CardContent className="p-8 space-y-6">
+            <div className="text-center space-y-3">
+              <h1 className="text-2xl font-bold text-gray-900">
                 Welcome to the new Outlook
               </h1>
-              <div className="flex justify-center">
-                {[
-                  {
-                    src: 'https://outlook-clone-five.vercel.app/Outlook-1.svg',
-                    alt: 'Outlook',
-                  },
-                  {
-                    src: 'https://outlook-clone-five.vercel.app/Outlook-2.svg',
-                    alt: 'Gmail',
-                  },
-                  {
-                    src: 'https://outlook-clone-five.vercel.app/Outlook-3.svg',
-                    alt: 'Yahoo',
-                  },
-                  {
-                    src: 'https://outlook-clone-five.vercel.app/Outlook-4.svg',
-                    alt: 'iCloud',
-                  },
-                  {
-                    src: 'https://outlook-clone-five.vercel.app/Outlook-5.svg',
-                    alt: 'iCloud',
-                  },
-                ].map((image, index) => (
+              <div className="flex justify-center space-x-2">
+                {socials.map((image, index) => (
                   <img
                     key={index}
-                    src={image.src}
+                    src={image.src || '/placeholder.svg'}
                     alt={image.alt}
-                    className="w-10 h-10"
+                    className="w-8 h-8 transition-transform hover:scale-110"
                   />
                 ))}
               </div>
-              <p className="text-sm text-gray-800">
-                Outlook supports Microsoft 356 , Gmail , Yahoo , iCloud , iMap ,
-                and POP ,{' '}
-                <span className="text-blue-500">
-                  <Link href="/register">Register Here</Link>
-                </span>
+              <p className="text-sm text-gray-600">
+                Outlook supports Microsoft 365, Gmail, Yahoo, iCloud, IMAP, and
+                POP
               </p>
             </div>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div className="space-y-2">
-                <div className="relative">
-                  <Input
-                    {...register('email', { required: 'Email is required' })}
-                    type="email"
-                    placeholder="Email"
-                    className="pl-10"
-                  />
-                  <Mail className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
-                </div>
-                {errors.email && (
-                  <p className="text-xs text-red-500">{errors.email.message}</p>
-                )}
-              </div>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+              <InputField
+                register={register}
+                name="email"
+                type="email"
+                placeholder="Email"
+                icon={<Mail className="w-4 h-4 text-gray-400" />}
+                error={errors.email}
+              />
 
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <div className="relative">
                   <Input
                     {...register('password', {
@@ -153,7 +130,7 @@ export default function LoginForm() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-3 text-gray-400"
+                    className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
                   >
                     {showPassword ? (
                       <EyeOff className="w-4 h-4" />
@@ -169,10 +146,16 @@ export default function LoginForm() {
                 )}
               </div>
 
-              <div className="flex justify-end">
+              <div className="flex justify-between items-center">
+                <Link
+                  href="/register"
+                  className="text-sm text-blue-600 hover:text-blue-800 transition-colors"
+                >
+                  Create account
+                </Link>
                 <Link
                   href="/forgot-password"
-                  className="text-sm text-primary hover:underline"
+                  className="text-sm text-blue-600 hover:text-blue-800 transition-colors"
                 >
                   Forgot password?
                 </Link>
@@ -180,16 +163,16 @@ export default function LoginForm() {
 
               <Button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-gray-800"
+                className="w-full bg-blue-600 hover:bg-blue-700 transition-colors"
                 disabled={loading}
               >
                 {loading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Please wait
+                    Please wait...
                   </>
                 ) : (
-                  'Get Started'
+                  'Sign In'
                 )}
               </Button>
             </form>
@@ -205,47 +188,38 @@ export default function LoginForm() {
               </div>
             </div>
 
-            <div className="flex justify-center space-x-4">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={handleGoogleSignIn}
-                className="w-10 h-10"
-              >
-                <img
-                  src="https://cdn-icons-png.flaticon.com/128/281/281764.png"
-                  alt="Google"
-                  className="w-5 h-5 object-contain"
-                />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => signIn('github')}
-                className="w-10 h-10"
-              >
-                <img
-                  src="https://cdn-icons-png.flaticon.com/128/5968/5968764.png"
-                  alt="GitHub"
-                  className="w-5 h-5 object-contain"
-                />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => signIn('apple')}
-                className="w-10 h-10"
-              >
-                <img
-                  src="https://cdn-icons-png.flaticon.com/128/731/731985.png"
-                  alt="Apple"
-                  className="w-5 h-5 object-contain"
-                />
-              </Button>
-            </div>
+            <Button
+              variant="outline"
+              onClick={handleGoogleSignIn}
+              className="w-full h-10 space-x-2 hover:bg-gray-100 transition-colors"
+            >
+              <img
+                src="https://cdn-icons-png.flaticon.com/128/281/281764.png"
+                alt="Google"
+                className="w-5 h-5 object-contain"
+              />
+              <span>Continue with Google</span>
+            </Button>
           </CardContent>
         </Card>
       </div>
+    </div>
+  );
+}
+
+function InputField({ register, name, type, placeholder, icon, error }: any) {
+  return (
+    <div className="space-y-1">
+      <div className="relative">
+        <Input
+          {...register(name, { required: `${placeholder} is required` })}
+          type={type}
+          placeholder={placeholder}
+          className="pl-10"
+        />
+        <span className="absolute left-3 top-3">{icon}</span>
+      </div>
+      {error && <p className="text-xs text-red-500">{error.message}</p>}
     </div>
   );
 }
