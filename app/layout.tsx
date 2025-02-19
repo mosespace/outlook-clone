@@ -18,15 +18,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getServerSession(authOptions);
-
-  // Add routing logic based on session
-  // if (!session) {
-  //   redirect('/login');
-  // } else {
-  //   redirect('/mail');
-  // }
-
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
