@@ -69,7 +69,7 @@ export default function LoginForm() {
   const handleGoogleSignIn = async () => {
     try {
       setLoading(true);
-      await signIn('google', { callbackUrl: '/' });
+      await signIn('google');
     } catch (error) {
       setLoading(false);
       toast.error('Error signing in with Google');
