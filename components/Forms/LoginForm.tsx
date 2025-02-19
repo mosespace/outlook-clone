@@ -65,13 +65,11 @@ export default function LoginForm() {
 
   return (
     <div className="min-h-screen w-full relative overflow-hidden">
-      {/* Background with gradient and image */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-blue-100">
         <div
           className="absolute bottom-0 left-0 right-0 h-[40vh] bg-cover bg-bottom opacity-40"
           style={{
-            backgroundImage:
-              "url('https://img.freepik.com/free-vector/blue-white-gradient-abstract-background_53876-60240.jpg?t=st=1739941695~exp=1739945295~hmac=a60287017d0b29cf7fde7949a5bedb34c3ec5dfbcb296f6cbb3ab83f05ef8c94&w=740')",
+            backgroundImage: "url('/login-bg.jpg')",
             maskImage: 'linear-gradient(to top, black, transparent)',
           }}
         />
@@ -86,33 +84,35 @@ export default function LoginForm() {
                 Welcome to the new Outlook
               </h1>
               <div className="flex justify-center">
-                <div className="flex space-x-2 items-center cursor-pointer">
+                {[
+                  {
+                    src: 'https://outlook-clone-five.vercel.app/Outlook-1.svg',
+                    alt: 'Outlook',
+                  },
+                  {
+                    src: 'https://outlook-clone-five.vercel.app/Outlook-2.svg',
+                    alt: 'Gmail',
+                  },
+                  {
+                    src: 'https://outlook-clone-five.vercel.app/Outlook-3.svg',
+                    alt: 'Yahoo',
+                  },
+                  {
+                    src: 'https://outlook-clone-five.vercel.app/Outlook-4.svg',
+                    alt: 'iCloud',
+                  },
+                  {
+                    src: 'https://outlook-clone-five.vercel.app/Outlook-5.svg',
+                    alt: 'iCloud',
+                  },
+                ].map((image, index) => (
                   <img
-                    src="https://outlook-clone-five.vercel.app/Outlook-1.svg"
-                    alt="Outlook"
+                    key={index}
+                    src={image.src}
+                    alt={image.alt}
                     className="w-10 h-10"
                   />
-                  <img
-                    src="https://outlook-clone-five.vercel.app/Outlook-2.svg"
-                    alt="Gmail"
-                    className="w-10 h-10"
-                  />
-                  <img
-                    src="https://outlook-clone-five.vercel.app/Outlook-3.svg"
-                    alt="Yahoo"
-                    className="w-10 h-10"
-                  />
-                  <img
-                    src="https://outlook-clone-five.vercel.app/Outlook-4.svg"
-                    alt="iCloud"
-                    className="w-10 h-10"
-                  />
-                  <img
-                    src="https://outlook-clone-five.vercel.app/Outlook-5.svg"
-                    alt="iCloud"
-                    className="w-10 h-10"
-                  />
-                </div>
+                ))}
               </div>
               <p className="text-sm text-gray-800">
                 Outlook supports Microsoft 356 , Gmail , Yahoo , iCloud , iMap ,

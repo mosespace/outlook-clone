@@ -1,7 +1,7 @@
 // components/NotAuthorized.tsx
-import Link from "next/link";
-import { Shield } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import Link from 'next/link';
+import { Shield } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function NotAuthorized() {
   return (
@@ -15,9 +15,6 @@ export default function NotAuthorized() {
           You don&apos;t have permission to access this page.
         </p>
         <div className="flex gap-4 justify-center">
-          <Button asChild variant="default">
-            <Link href="/dashboard">Go to Dashboard</Link>
-          </Button>
           <Button asChild variant="outline">
             <Link href="/">Go to Home</Link>
           </Button>
