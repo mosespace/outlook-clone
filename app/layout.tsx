@@ -9,8 +9,8 @@ import './globals.css';
 const inter = Rethink_Sans({ subsets: ['latin'], display: 'swap' });
 
 export const metadata: Metadata = {
-  title: 'Ronix Fit Savers',
-  description: 'Join Ronix Savings Group',
+  title: 'Outlook Clone',
+  description: 'crafted with love by Kisakye Moses',
 };
 
 export default async function RootLayout({

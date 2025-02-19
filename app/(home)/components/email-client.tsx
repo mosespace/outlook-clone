@@ -35,54 +35,8 @@ import { Email } from '@prisma/client';
 import { ComposeView } from './compose-view';
 import EmailItem from './email-Item';
 import ReadView from './read-view';
-
-// const emails = [
-//   {
-//     id: 1,
-//     from: 'Elvia Atkins',
-//     subject: 'Surprise Birthday Planning',
-//     preview: "Hey team, let's coordinate the surprise party...",
-//     content: `Hi team,
-
-// Let's coordinate the surprise party for next week. I've reserved the venue and ordered the cake. Could everyone please confirm their attendance and what they'll bring?
-
-// Best,
-// Elvia`,
-//     time: '8:32 AM',
-//     unread: true,
-//     pinned: true,
-//     avatar: '/profile.jpg',
-//     section: 'Today',
-//   },
-
-//   {
-//     id: 2,
-//     label: 'Planning',
-//     unread: true,
-//     from: "Margie's Travel",
-//     subject: 'Confirmation Letter - MPOWMQ',
-//     preview: 'Thanks for booking your flight with Margie...',
-//     content: `Dear Valued Customer,
-
-// Thanks for booking your flight with Margie's Travel. Your reservation has been confirmed with the following details:
-
-// Booking Reference: MPOWMQ
-// Date: Fri 11/22/2023
-// Departure: 2:35 PM
-
-// Please remember to check in online 24 hours before your flight. We hope you have a pleasant journey!
-
-// Best regards,
-// Margie's Travel Team`,
-//     time: '8:32 AM',
-//     avatar: '/profile.jpg',
-//     section: 'Yesterday',
-//     calendar: {
-//       date: 'Fri 11/22/2023 2:35 PM',
-//       action: 'RSVP',
-//     },
-//   },
-// ];
+import { signOut, useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 interface EmailViewState {
   mode: 'read' | 'compose';
@@ -119,6 +73,14 @@ function SidebarSection({
 }
 
 export default function EmailClient({ emails }: { emails: Email[] }) {
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  if (!session) {
+    router.push('/login');
+    return;
+  }
+
   const sidebarData = {
     favorites: [
       { icon: Inbox, label: 'Inbox', count: emails.length },
@@ -143,6 +105,7 @@ export default function EmailClient({ emails }: { emails: Email[] }) {
     mode: 'read',
     selectedEmail: emails[0],
   });
+
   const [sections, setSections] = React.useState({
     today: true,
     yesterday: true,
@@ -381,6 +344,16 @@ export default function EmailClient({ emails }: { emails: Email[] }) {
                 >
                   Upgrade to Microsoft 365
                 </Button>
+                {session && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => signOut()}
+                    className="w-full justify-start gap-2"
+                  >
+                    Log Out
+                  </Button>
+                )}
               </div>
             </div>
           </ScrollArea>

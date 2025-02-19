@@ -1,140 +1,241 @@
 'use client';
-import { Loader2, Lock, Mail } from 'lucide-react';
-import Link from 'next/link';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
 
-import { LoginProps } from '@/types/types';
+import { Eye, EyeOff, Loader2, Lock, Mail } from 'lucide-react';
+import { useState } from 'react';
+import Link from 'next/link';
+import { useForm } from 'react-hook-form';
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { FaGithub, FaGoogle } from 'react-icons/fa';
 import { toast } from 'sonner';
-import PasswordInput from '../FormInputs/PasswordInput';
-import SubmitButton from '../FormInputs/SubmitButton';
-import TextInput from '../FormInputs/TextInput';
-import Logo from '../global/Logo';
-import { Button } from '../ui/button';
+
+import type { LoginProps } from '@/types/types';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
+
 export default function LoginForm() {
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const {
     handleSubmit,
     register,
     formState: { errors },
     reset,
   } = useForm<LoginProps>();
+
   const params = useSearchParams();
-  const returnUrl = params.get('returnUrl') || '/dashboard';
   const [passErr, setPassErr] = useState('');
   const router = useRouter();
+
   async function onSubmit(data: LoginProps) {
     try {
       setLoading(true);
       setPassErr('');
-      console.log('Attempting to sign in with credentials:', data);
       const loginData = await signIn('credentials', {
         ...data,
         redirect: false,
       });
-      console.log('SignIn response:', loginData);
+
       if (loginData?.error) {
         setLoading(false);
         toast.error('Sign-in error: Check your credentials');
         setPassErr('Wrong Credentials, Check again');
-        // setShowNotification(true);
       } else {
-        // Sign-in was successful
-        // setShowNotification(false);
         reset();
         setLoading(false);
         toast.success('Login Successful');
         setPassErr('');
-        router.push(returnUrl);
+        router.push('/');
       }
     } catch (error) {
       setLoading(false);
       console.error('Network Error:', error);
-      // toast.error("Its seems something is wrong with your Network");
     }
   }
+  const handleGoogleSignIn = async () => {
+    try {
+      setLoading(true);
+      await signIn('google', { callbackUrl: '/' });
+    } catch (error) {
+      setLoading(false);
+      toast.error('Error signing in with Google');
+      console.error('Google Sign-in Error:', error);
+    }
+  };
+
   return (
-    <div className="w-full items-center justify-center lg:grid h-screen lg:min-h-[600px] relative">
-      <div className="py-12 w-full mx-auto">
-        <div className="mx-auto w-full grid max-w-[400px] gap-6 mt-10 md:mt-0">
-          <div className="absolute left-1/3 top-14 md:top-5 md:left-5">
-            <Logo />
-          </div>
-          <div className="grid gap-2  mt-10 md:mt-0">
-            <h1 className="text-3xl font-bold">Login to your Account</h1>
-            <p className="text-muted-foreground text-sm">
-              Welcome Back to <span className="text-blue-600">Next Admin</span>
-            </p>
-          </div>
-          <div className="">
-            <form className="space-y-3" onSubmit={handleSubmit(onSubmit)}>
-              <TextInput
-                register={register}
-                errors={errors}
-                label="Email Address"
-                name="email"
-                icon={Mail}
-                placeholder="email"
-              />
-              <PasswordInput
-                register={register}
-                errors={errors}
-                label="Password"
-                name="password"
-                icon={Lock}
-                placeholder="password"
-                forgotPasswordLink="/forgot-password"
-              />
-              {passErr && <p className="text-red-500 text-xs">{passErr}</p>}
-              <div>
-                <SubmitButton
-                  title="Sign In"
-                  loadingTitle="Loading Please wait.."
-                  loading={loading}
-                  className="w-full"
-                  loaderIcon={Loader2}
-                  showIcon={false}
-                />
+    <div className="min-h-screen w-full relative overflow-hidden">
+      {/* Background with gradient and image */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-blue-100">
+        <div
+          className="absolute bottom-0 left-0 right-0 h-[40vh] bg-cover bg-bottom opacity-40"
+          style={{
+            backgroundImage: "url('/images/bg.jpg')",
+            maskImage: 'linear-gradient(to top, black, transparent)',
+          }}
+        />
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 min-h-screen w-full flex items-center justify-center p-4">
+        <Card className="w-full max-w-[400px] shadow-lg backdrop-blur-sm bg-white/95">
+          <CardContent className="p-6 space-y-6">
+            <div className="text-center space-y-2">
+              <h1 className="text-xl font-semibold text-gray-900">
+                Welcome to the new Outlook
+              </h1>
+              <div className="flex justify-center">
+                <div className="flex space-x-2 items-center cursor-pointer">
+                  <img
+                    src="/Outlook-1.svg"
+                    alt="Outlook"
+                    className="w-10 h-10"
+                  />
+                  <img src="/Outlook-2.svg" alt="Gmail" className="w-10 h-10" />
+                  <img src="/Outlook-3.svg" alt="Yahoo" className="w-10 h-10" />
+                  <img
+                    src="/Outlook-4.svg"
+                    alt="iCloud"
+                    className="w-10 h-10"
+                  />
+                  <img
+                    src="/Outlook-5.svg"
+                    alt="iCloud"
+                    className="w-10 h-10"
+                  />
+                </div>
               </div>
-            </form>
-            <div className="flex items-center py-4 justify-center space-x-1 text-slate-900">
-              <div className="h-[1px] w-full bg-slate-200"></div>
-              <div className="uppercase">Or</div>
-              <div className="h-[1px] w-full bg-slate-200"></div>
+              <p className="text-sm text-gray-800">
+                Outlook supports Microsoft 356 , Gmail , Yahoo , iCloud , iMap ,
+                and POP ,{' '}
+                <span className="text-blue-500">
+                  <Link href="/register">Register Here</Link>
+                </span>
+              </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              <div className="space-y-2">
+                <div className="relative">
+                  <Input
+                    {...register('email', { required: 'Email is required' })}
+                    type="email"
+                    placeholder="Email"
+                    className="pl-10"
+                  />
+                  <Mail className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                </div>
+                {errors.email && (
+                  <p className="text-xs text-red-500">{errors.email.message}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <div className="relative">
+                  <Input
+                    {...register('password', {
+                      required: 'Password is required',
+                    })}
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Password"
+                    className="pl-10 pr-10"
+                  />
+                  <Lock className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-3 text-gray-400"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-4 h-4" />
+                    ) : (
+                      <Eye className="w-4 h-4" />
+                    )}
+                  </button>
+                </div>
+                {errors.password && (
+                  <p className="text-xs text-red-500">
+                    {errors.password.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="flex justify-end">
+                <Link
+                  href="/forgot-password"
+                  className="text-sm text-primary hover:underline"
+                >
+                  Forgot password?
+                </Link>
+              </div>
+
               <Button
-                onClick={() => signIn('google')}
-                variant={'outline'}
-                className="w-full"
+                type="submit"
+                className="w-full bg-blue-600 hover:bg-gray-800"
+                disabled={loading}
               >
-                <FaGoogle className="mr-2 w-6 h-6 text-red-500" />
-                Login with Google
+                {loading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Please wait
+                  </>
+                ) : (
+                  'Get Started'
+                )}
+              </Button>
+            </form>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-200" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-white px-2 text-gray-500">
+                  Or sign in with
+                </span>
+              </div>
+            </div>
+
+            <div className="flex justify-center space-x-4">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={handleGoogleSignIn}
+                className="w-10 h-10"
+              >
+                <img
+                  src="https://cdn-icons-png.flaticon.com/128/281/281764.png"
+                  alt="Google"
+                  className="w-5 h-5 object-contain"
+                />
               </Button>
               <Button
+                variant="outline"
+                size="icon"
                 onClick={() => signIn('github')}
-                variant={'outline'}
-                className="w-full"
+                className="w-10 h-10"
               >
-                <FaGithub className="mr-2 w-6 h-6 text-slate-900 dark:text-white" />
-                Login with Github
+                <img
+                  src="https://cdn-icons-png.flaticon.com/128/5968/5968764.png"
+                  alt="GitHub"
+                  className="w-5 h-5 object-contain"
+                />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => signIn('apple')}
+                className="w-10 h-10"
+              >
+                <img
+                  src="https://cdn-icons-png.flaticon.com/128/731/731985.png"
+                  alt="Apple"
+                  className="w-5 h-5 object-contain"
+                />
               </Button>
             </div>
-            <p className="mt-6  text-sm text-gray-500">
-              Not a Registered ?{' '}
-              <Link
-                href="/register"
-                className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
-              >
-                Create Account
-              </Link>
-            </p>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
