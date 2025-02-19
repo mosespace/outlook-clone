@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { convertIsoToDateString } from '@/lib/convertISODateToNorma';
 import { Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { markEmailAsRead, togglePinEmail } from '../../actions/email';
+import { markEmailAsRead, togglePinEmail } from '@/actions/email';
 
 export default function EmailItem({
   email,

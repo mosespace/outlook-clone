@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import React from 'react';
 import { toast } from 'sonner';
-import { sendEmail } from '../../actions/email';
+import { sendEmail } from '@/actions/email';
 import {
   DropdownMenu,
   DropdownMenuContent,

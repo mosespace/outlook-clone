@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Reply, Trash2 } from 'lucide-react';
-import { deleteEmail } from '../../actions/email';
+import { deleteEmail } from '@/actions/email';
 
 export default function ReadView({ email }: { email: any }) {
   const handleEmailDelete = async (e: React.MouseEvent) => {
