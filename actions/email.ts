@@ -114,7 +114,7 @@ export async function sendEmail(formData: any) {
 
     console.log('Email Created Passed ✅');
 
-    revalidatePath('/mail');
+    revalidatePath('/');
     return {
       data: email,
       status: 201,
@@ -179,7 +179,7 @@ export async function markEmailAsRead(emailId: string) {
       data: { isRead: true },
     });
 
-    revalidatePath('/mail');
+    revalidatePath('/');
     return { success: true };
   } catch (error) {
     return { success: false, error: 'Failed to mark email as read' };
@@ -206,7 +206,7 @@ export async function togglePinEmail(emailId: string) {
       data: { isPinned: !email.isPinned },
     });
 
-    revalidatePath('/mail');
+    revalidatePath('/');
     return { success: true };
   } catch (error) {
     return { success: false, error: 'Failed to toggle pin status' };
@@ -224,7 +224,7 @@ export async function deleteEmail(emailId: string) {
       where: { id: emailId },
     });
 
-    revalidatePath('/mail');
+    revalidatePath('/');
     return { success: true };
   } catch (error) {
     return { success: false, error: 'Failed to delete email' };

@@ -102,8 +102,8 @@ export default function EmailClient({ emails }: { emails: Email[] }) {
   };
 
   const [viewState, setViewState] = React.useState<EmailViewState>({
-    mode: 'read',
-    selectedEmail: emails[0],
+    mode: 'compose',
+    selectedEmail: null,
   });
 
   const [sections, setSections] = React.useState({
@@ -360,114 +360,142 @@ export default function EmailClient({ emails }: { emails: Email[] }) {
         </div>
 
         {/* Email List - Fixed */}
-        <div className="flex flex-col border-r bg-white h-full overflow-hidden">
-          <Tabs defaultValue="focused" className="flex flex-col h-full">
-            <div className="flex items-center justify-between border-b p-2">
-              <TabsList className="h-8">
-                <TabsTrigger value="focused">Focused</TabsTrigger>
-                <TabsTrigger value="other">Other</TabsTrigger>
-              </TabsList>
-              <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon" className="h-8 w-8">
-                  <Search className="h-4 w-4" />
-                </Button>
-                <Button variant="ghost" size="icon" className="h-8 w-8">
-                  <Settings className="h-4 w-4" />
+        {emails.length === 0 ? (
+          <>
+            <div className="flex flex-col items-center justify-center h-screen bg-gray-50">
+              <div className="text-center space-y-4">
+                <Inbox className="h-16 w-16 text-gray-400 mx-auto" />
+                <h2 className="text-2xl font-semibold text-gray-700">
+                  No Mail Found
+                </h2>
+                <p className="text-gray-500">
+                  Your inbox is empty at the moment
+                </p>
+                <Button
+                  onClick={handleNewEmail}
+                  className="bg-blue-600 text-white hover:bg-blue-700"
+                >
+                  <MailPlus className="h-4 w-4 mr-2" />
+                  Compose New Email
                 </Button>
               </div>
             </div>
-            <TabsContent value="focused" className="m-0 flex-1 overflow-hidden">
-              <ScrollArea className="h-full">
-                <div className="flex flex-col">
-                  {/* Pinned Section */}
-                  <div
-                    className="flex items-center gap-2 p-2 hover:cursor-pointer"
-                    onClick={() =>
-                      setSections({ ...sections, pinned: !sections.pinned })
-                    }
-                  >
-                    {sections.pinned ? (
-                      <ArrowDown className="h-4 w-4" />
-                    ) : (
-                      <ArrowRight className="h-4 w-4" />
-                    )}
-                    <span className="text-sm text-muted-foreground">
-                      Pinned
-                    </span>
-                  </div>
-                  {sections.pinned &&
-                    emails
-                      .filter((e) => e.isPinned)
-                      .map((email) => (
-                        <EmailItem
-                          key={email.id}
-                          email={email}
-                          selected={viewState.selectedEmail?.id === email.id}
-                          onSelect={() => handleSelectEmail(email)}
-                        />
-                      ))}
-
-                  {/* Today Section */}
-                  <div
-                    className="flex items-center gap-2 p-2 hover:cursor-pointer"
-                    onClick={() =>
-                      setSections({ ...sections, today: !sections.today })
-                    }
-                  >
-                    {sections.today ? (
-                      <ArrowDown className="h-4 w-4" />
-                    ) : (
-                      <ArrowRight className="h-4 w-4" />
-                    )}
-                    <span className="text-sm text-muted-foreground">Today</span>
-                  </div>
-                  {sections.today &&
-                    emails
-                      .filter((e) => e.section === 'Today')
-                      .map((email) => (
-                        <EmailItem
-                          key={email.id}
-                          email={email}
-                          selected={viewState.selectedEmail?.id === email.id}
-                          onSelect={() => handleSelectEmail(email)}
-                        />
-                      ))}
-
-                  {/* Yesterday Section */}
-                  <div
-                    className="flex items-center gap-2 p-2 hover:cursor-pointer"
-                    onClick={() =>
-                      setSections({
-                        ...sections,
-                        yesterday: !sections.yesterday,
-                      })
-                    }
-                  >
-                    {sections.yesterday ? (
-                      <ArrowDown className="h-4 w-4" />
-                    ) : (
-                      <ArrowRight className="h-4 w-4" />
-                    )}
-                    <span className="text-sm text-muted-foreground">
-                      Yesterday
-                    </span>
-                  </div>
-                  {sections.yesterday &&
-                    emails
-                      .filter((e) => e.section === 'Yesterday')
-                      .map((email) => (
-                        <EmailItem
-                          key={email.id}
-                          email={email}
-                          selected={viewState.selectedEmail?.id === email.id}
-                          onSelect={() => handleSelectEmail(email)}
-                        />
-                      ))}
+          </>
+        ) : (
+          <div className="flex flex-col border-r bg-white h-full overflow-hidden">
+            <Tabs defaultValue="focused" className="flex flex-col h-full">
+              <div className="flex items-center justify-between border-b p-2">
+                <TabsList className="h-8">
+                  <TabsTrigger value="focused">Focused</TabsTrigger>
+                  <TabsTrigger value="other">Other</TabsTrigger>
+                </TabsList>
+                <div className="flex items-center gap-2">
+                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <Search className="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <Settings className="h-4 w-4" />
+                  </Button>
                 </div>
-              </ScrollArea>
-            </TabsContent>
-          </Tabs>
-        </div>
+              </div>
+              <TabsContent
+                value="focused"
+                className="m-0 flex-1 overflow-hidden"
+              >
+                <ScrollArea className="h-full">
+                  <div className="flex flex-col">
+                    {/* Pinned Section */}
+                    <div
+                      className="flex items-center gap-2 p-2 hover:cursor-pointer"
+                      onClick={() =>
+                        setSections({ ...sections, pinned: !sections.pinned })
+                      }
+                    >
+                      {sections.pinned ? (
+                        <ArrowDown className="h-4 w-4" />
+                      ) : (
+                        <ArrowRight className="h-4 w-4" />
+                      )}
+                      <span className="text-sm text-muted-foreground">
+                        Pinned
+                      </span>
+                    </div>
+                    {sections.pinned &&
+                      emails
+                        .filter((e) => e.isPinned)
+                        .map((email) => (
+                          <EmailItem
+                            key={email.id}
+                            email={email}
+                            selected={viewState.selectedEmail?.id === email.id}
+                            onSelect={() => handleSelectEmail(email)}
+                          />
+                        ))}
+
+                    {/* Today Section */}
+                    <div
+                      className="flex items-center gap-2 p-2 hover:cursor-pointer"
+                      onClick={() =>
+                        setSections({ ...sections, today: !sections.today })
+                      }
+                    >
+                      {sections.today ? (
+                        <ArrowDown className="h-4 w-4" />
+                      ) : (
+                        <ArrowRight className="h-4 w-4" />
+                      )}
+                      <span className="text-sm text-muted-foreground">
+                        Today
+                      </span>
+                    </div>
+                    {sections.today &&
+                      emails
+                        .filter((e) => e.section === 'Today')
+                        .map((email) => (
+                          <EmailItem
+                            key={email.id}
+                            email={email}
+                            selected={viewState.selectedEmail?.id === email.id}
+                            onSelect={() => handleSelectEmail(email)}
+                          />
+                        ))}
+
+                    {/* Yesterday Section */}
+                    <div
+                      className="flex items-center gap-2 p-2 hover:cursor-pointer"
+                      onClick={() =>
+                        setSections({
+                          ...sections,
+                          yesterday: !sections.yesterday,
+                        })
+                      }
+                    >
+                      {sections.yesterday ? (
+                        <ArrowDown className="h-4 w-4" />
+                      ) : (
+                        <ArrowRight className="h-4 w-4" />
+                      )}
+                      <span className="text-sm text-muted-foreground">
+                        Yesterday
+                      </span>
+                    </div>
+                    {sections.yesterday &&
+                      emails
+                        .filter((e) => e.section === 'Yesterday')
+                        .map((email) => (
+                          <EmailItem
+                            key={email.id}
+                            email={email}
+                            selected={viewState.selectedEmail?.id === email.id}
+                            onSelect={() => handleSelectEmail(email)}
+                          />
+                        ))}
+                  </div>
+                </ScrollArea>
+              </TabsContent>
+            </Tabs>
+          </div>
+        )}
 
         {/* Email Content / Compose - Fixed */}
         <div className="flex flex-col bg-white p-4 h-full overflow-hidden">

@@ -27,7 +27,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "app/(mail)/mail/layout.tsxz"
+    "app/(mail)//layout.tsxz"
   ],
   "exclude": ["node_modules"]
 }
