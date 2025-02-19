@@ -1,4 +1,4 @@
-import { Role, User } from "@prisma/client";
+import { User } from '@prisma/client';
 
 export type CategoryProps = {
   title: string;
@@ -38,9 +38,7 @@ export interface RoleFormData {
   permissions: string[];
 }
 
-export interface UserWithRoles extends User {
-  roles: Role[];
-}
+export interface UserWithRoles extends User {}
 
 export interface RoleOption {
   label: string;
