@@ -12,7 +12,7 @@ export default function ReadView({ email }: { email: any }) {
     e.stopPropagation(); // Preventing email selection
     try {
       await deleteEmail(email.id);
-      router.refresh();
+      // router.refresh();
     } catch (error) {
       console.error('Error updating pin status:', error);
     }

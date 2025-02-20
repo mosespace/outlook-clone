@@ -53,7 +53,7 @@ export function ComposeView() {
 
       if (req.status === 201) {
         toast.success(`${req.message}`);
-        router.refresh();
+        // router.refresh();
       } else {
         toast.error(`${req.message}`);
       }
