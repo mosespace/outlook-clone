@@ -1,8 +1,7 @@
-import React from 'react';
-import EmailClient from './components/email-client';
 import { getCurrentUserEmails } from '@/actions/email';
-import { getServerSession } from 'next-auth';
 import { authOptions } from '@/config/auth';
+import { getServerSession } from 'next-auth';
+import EmailClient from './components/email-client';
 import { redirect } from 'next/navigation';
 
 export default async function page() {

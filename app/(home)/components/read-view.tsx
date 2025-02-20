@@ -3,11 +3,8 @@
 import { deleteEmail } from '@/actions/email';
 import { Button } from '@/components/ui/button';
 import { Reply, Trash2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 
 export default function ReadView({ email }: { email: any }) {
-  const router = useRouter();
-
   const handleEmailDelete = async (e: any) => {
     e.stopPropagation(); // Preventing email selection
     try {

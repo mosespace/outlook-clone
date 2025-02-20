@@ -74,12 +74,6 @@ function SidebarSection({
 
 export default function EmailClient({ emails }: { emails: Email[] }) {
   const { data: session } = useSession();
-  const router = useRouter();
-
-  if (!session) {
-    router.push('/login');
-    return;
-  }
 
   const sidebarData = {
     favorites: [

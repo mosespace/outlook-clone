@@ -62,11 +62,6 @@ export function ComposeView() {
     } finally {
       setLoading(false);
     }
-
-    // const formData = new FormData();
-    // formData.append('to', recipients[0]);
-    // formData.append('subject', subject);
-    // formData.append('content', message);
   };
 
   return (
