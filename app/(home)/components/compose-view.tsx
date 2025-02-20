@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ChevronDown, X } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export function ComposeView() {
   const [recipients, setRecipients] = React.useState<string[]>([]);
@@ -29,6 +30,8 @@ export function ComposeView() {
       setRecipients([...recipients, value.trim()]);
     }
   }
+
+  const router = useRouter();
 
   const handleSend = async () => {
     // Send email
@@ -50,7 +53,7 @@ export function ComposeView() {
 
       if (req.status === 201) {
         toast.success(`${req.message}`);
-        location.reload();
+        router.refresh();
       } else {
         toast.error(`${req.message}`);
       }

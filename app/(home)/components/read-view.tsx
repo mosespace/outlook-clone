@@ -1,13 +1,18 @@
+'use client';
+
+import { deleteEmail } from '@/actions/email';
 import { Button } from '@/components/ui/button';
 import { Reply, Trash2 } from 'lucide-react';
-import { deleteEmail } from '@/actions/email';
+import { useRouter } from 'next/navigation';
 
 export default function ReadView({ email }: { email: any }) {
-  const handleEmailDelete = async (e: React.MouseEvent) => {
+  const router = useRouter();
+
+  const handleEmailDelete = async (e: any) => {
     e.stopPropagation(); // Preventing email selection
     try {
       await deleteEmail(email.id);
-      location.reload();
+      router.refresh();
     } catch (error) {
       console.error('Error updating pin status:', error);
     }
